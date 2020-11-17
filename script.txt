@@ -1,0 +1,64 @@
+#coding:utf-8
+
+django-admin startproject xmjc_analysis
+django-admin startapp analysis
+
+
+python manage.py makemigrations
+python manage.py migrate
+
+
+python manage.py createsuperuser
+
+LANGUAGE_CODE = 'zh-Hans' # 中文显示
+
+
+virtualenv env          # 创建虚拟环境，命名: env
+source env/bin/activate # 进入虚拟环境env
+
+
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+ 
+    url(r'^index/$', analysis_views.index,name='index'),# 首页
+]
+
+# 方法 1
+User.objects.create(username="李白", userpass="libai123",useremail="libai@163.com",usertype="超级管理员")
+# 方法 2
+twz =User(username="李白", userpass="libai123",useremail="libai@163.com",usertype="超级管理员")
+twz.save()
+# 获取对象：
+Person.objects.all()
+# 满足条件查询
+User.objects.filter(username="李白")
+# 迭代查询：
+es = Entry.objects.all()
+for e in es:
+    print(e.headline)
+# 查询排序：
+User.objects.all().order_by('username')
+# 链式查询：
+User.objects.filter(name__contains="WeizhongTu").filter(email="tuweizhong@163.com")
+# 去重查询：
+qs = qs.distinct()
+# 删除操作：
+User.objects.all().delete()
+
+
+# 更新操作：
+Person.objects.filter(name__contains="abc").update(name='xxx')
+数据的导出：
+python manage.py dumpdata [appname] > appname_data.json
+python manage.py dumpdata blog > blog_dump.json
+导出用户数据
+python manage.py dumpdata auth > auth.json # 导出用户数据
+
+
+
+##安装pyqt
+pip3 install PyQt5
+pip3 install pyqt5-tools
+pip3 install QCandyUi
+pip  config set global.index-url  https://pypi.douban.com/simple
