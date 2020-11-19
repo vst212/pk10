@@ -62,3 +62,12 @@ pip3 install PyQt5
 pip3 install pyqt5-tools
 pip3 install QCandyUi
 pip  config set global.index-url  https://pypi.douban.com/simple
+
+
+C:\Users\jack\AppData\Local\Programs\Python\Python39\Scripts\pyqt5designer.exe
+$ProjectFileDir$ 工作目录
+
+
+C:\Users\jack\AppData\Local\Programs\Python\Python39\python39.exe
+-m PyQt5.uic.pyuic  $FileName$ -o $FileNameWithoutExtension$.py  参数
+$ProjectFileDir$ 工作目录
