@@ -9,73 +9,93 @@
 import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtWidgets import QLabel, QPushButton
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1031, 804)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_wechatqrcode(object):
+    def setupUi(self, wechatqrcode):
+        wechatqrcode.setObjectName("wechatqrcode")
+        wechatqrcode.resize(1006, 689)
+        wechatqrcode.setAutoFillBackground(False)
+        self.centralwidget = QtWidgets.QWidget(wechatqrcode)
         self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout_2.setObjectName("gridLayout_2")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(60, 30, 691, 31))
         self.lineEdit.setObjectName("lineEdit")
+        self.gridLayout_2.addWidget(self.lineEdit, 0, 0, 1, 1)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(780, 30, 161, 31))
+        self.pushButton.setIconSize(QtCore.QSize(32, 32))
         self.pushButton.setObjectName("pushButton")
-        self.listView = QtWidgets.QListView(self.centralwidget)
-        self.listView.setGeometry(QtCore.QRect(50, 80, 941, 661))
-        self.listView.setObjectName("listView")
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_2.setGeometry(QtCore.QRect(90, 310, 251, 20))
-        self.lineEdit_2.setReadOnly(True)
-        self.lineEdit_2.setObjectName("lineEdit_2")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(100, 130, 231, 161))
-        self.label.setText("")
-        self.label.setObjectName("label")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1031, 23))
+        self.gridLayout_2.addWidget(self.pushButton, 0, 1, 1, 1)
+        self.gridLayout = QtWidgets.QGridLayout()
+        self.gridLayout.setObjectName("gridLayout")
+        self.gridLayout_2.addLayout(self.gridLayout, 1, 0, 1, 2)
+        wechatqrcode.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(wechatqrcode)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1006, 23))
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        wechatqrcode.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(wechatqrcode)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        wechatqrcode.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menu.menuAction())
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(wechatqrcode)
+        QtCore.QMetaObject.connectSlotsByName(wechatqrcode)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, wechatqrcode):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setToolTip(_translate("MainWindow", "输入公众号链接点击获取"))
-        self.pushButton.setText(_translate("MainWindow", "获取二维码"))
-        self.menu.setTitle(_translate("MainWindow", "菜单"))
+        wechatqrcode.setWindowTitle(_translate("wechatqrcode", "MainWindow"))
+        self.pushButton.setToolTip(_translate("wechatqrcode", "输入公众号链接点击获取"))
+        self.pushButton.setText(_translate("wechatqrcode", "获取二维码"))
+        self.menu.setTitle(_translate("wechatqrcode", "菜单"))
         self.pushButton.clicked.connect(self.search)
-        self.label.setScaledContents(True)
+
 
     def search(self):
         url = "http://photocdn.sohu.com/20120128/Img333056814.jpg"
         res = requests.get(url)
         img = QImage.fromData(res.content)
-        self.label.setPixmap(QPixmap.fromImage(img))
+        myimg=QLabel(self.centralwidget)
+        myimg.setScaledContents(True)
+        myimg.setPixmap(QPixmap.fromImage(img))
+        myimg.setFixedSize(200, 200)
 
-    def suoluetu(self):
-        names = []
-        positions = [(i, j) for i in range(4) for j in range(30)]
-        for i in range(0,10):
-            names.append("./photo" + "/" + i)
+        positions = [(i,j) for i in range(10) for j in range(4)]  # 规定每行每列多少数据
+        for position,j in zip(positions,range(10)):
+            print(*position)
+            button = QPushButton("%s"%j)
+            self.gridLayout.addWidget(button,*position)
+
+    def search3(self):
+        url = "http://photocdn.sohu.com/20120128/Img333056814.jpg"
+        res = requests.get(url)
+        img = QImage.fromData(res.content)
+        myimg=QLabel(self.centralwidget)
+        myimg.setScaledContents(True)
+        myimg.setPixmap(QPixmap.fromImage(img))
+        myimg.setFixedSize(200,200)
+
+        positions = [(i,j) for i in range(10) for j in range(4)]  # 规定每行每列多少数据
+        for position,j in zip(positions,range(10)):
+            myimg.move(100 * position[0] + 50, 150 * position[1] + 70)
+            self.gridLayout.addWidget(myimg,*position)
+
+
+
+    def search4(self):
+        url = "http://photocdn.sohu.com/20120128/Img333056814.jpg"
+        res = requests.get(url)
+        img = QImage.fromData(res.content)
         self.filewidget = QWidget()
-        self.filewidget.setMinimumSize(350, 1800)
-        for position, names in zip(positions, names):
-            lab = QLabel(self.filewidget)
-            lab.setFixedSize(100, 150)
-            pix = QtGui.QPixmap(names)
-            lab.setPixmap(pix)
-            lab.move(100 * position[0] + 50, 150 * position[1] + 70)
+        positions = [(i,j) for i in range(10) for j in range(4)]  # 规定每行每列多少数据
+        for position,j in zip(positions,range(10)):
+            myimg = QLabel(self.filewidget)
+            myimg.setScaledContents(True)
+            myimg.setPixmap(QPixmap.fromImage(img))
+            myimg.setFixedSize(200, 200)
+            myimg.move(100 * position[0] + 50, 150 * position[1] + 70)
         self.scrollArea.setWidget(self.filewidget)
