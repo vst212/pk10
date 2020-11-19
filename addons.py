@@ -6,14 +6,27 @@ import json
 import re
 from urllib.parse import unquote
 import hashlib
+import json
 
-print("sd233")
+
+def read(fileName=""):
+    if fileName != '':
+        strList = fileName.split(".")
+        if strList[len(strList) - 1].lower() == "json":
+            with open(fileName, mode='r', encoding="utf-8") as file:
+                return json.loads(file.read())
+
+
+def write(filename, new_dict):
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(new_dict, f, ensure_ascii=False, indent=4)
+        print("写入json完成...")
+
 
 import mitmproxy as mp
-import redis
-from .readJSON import *
 
-mykey=read("../config.json")
+mykey = read("config.json")
+
 
 class WeiXinProxy:
     def __init__(self):
@@ -25,17 +38,17 @@ class WeiXinProxy:
         return uin
 
     def request(self, flow: mp.http.HTTPFlow):
-        print("duquduqu")
         if flow.request.host == "mp.weixin.qq.com":
-            print("开始抓取啦")
             url_path = flow.request.path
             if url_path.startswith("/s?__biz=") and "uin=" in url_path and "key=" in url_path:
                 biz = self.uin_md5(re.search(r"__biz=([^&]+)&?", url_path).group(1))
                 key = re.search(r"key=([^&]+)&?", url_path).group(1)
                 uin = self.uin_md5(re.search(r"uin=([^&]+)&?", url_path).group(1))
                 hash_key = hashlib.md5(biz.encode("utf-8")).hexdigest()
-                print("抓到了：", hash_key, biz, uin, key) ##直接保持到本地txt即可 每次更新txt
-                write("../config.json",{"hash_key":hash_key,"biz":biz,"uin":uin,"key":key})
+                mykey[biz]= {"hash_key": hash_key, "biz": biz, "uin": uin, "key": key}
+                write("config.json",mykey)
+
+
 
 addons = [
     WeiXinProxy()
