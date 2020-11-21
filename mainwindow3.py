@@ -17,24 +17,19 @@ from getqrcode import search
 from proxy import openproxy, closeproxy, startmimt
 
 
+
 class Ui_wechatqrcode(object):
     def setupUi(self, wechatqrcode):
         wechatqrcode.setObjectName("wechatqrcode")
-        wechatqrcode.resize(1029, 713)
+        wechatqrcode.resize(1200, 713)
         wechatqrcode.setAutoFillBackground(False)
         self.centralwidget = QtWidgets.QWidget(wechatqrcode)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setObjectName("label")
-        self.gridLayout_2.addWidget(self.label, 6, 1, 1, 1)
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_4.setObjectName("pushButton_4")
         self.gridLayout_2.addWidget(self.pushButton_4, 5, 1, 1, 1)
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.gridLayout_2.addWidget(self.pushButton_2, 2, 1, 1, 1)
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setMinimumSize(QtCore.QSize(0, 50))
         self.lineEdit.setObjectName("lineEdit")
@@ -42,7 +37,7 @@ class Ui_wechatqrcode(object):
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setMaximumSize(QtCore.QSize(200, 600))
         self.textBrowser.setObjectName("textBrowser")
-        self.gridLayout_2.addWidget(self.textBrowser, 8, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.textBrowser, 6, 1, 1, 1)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setMinimumSize(QtCore.QSize(200, 50))
         font = QtGui.QFont()
@@ -57,6 +52,12 @@ class Ui_wechatqrcode(object):
         self.pushButton.setIconSize(QtCore.QSize(32, 32))
         self.pushButton.setObjectName("pushButton")
         self.gridLayout_2.addWidget(self.pushButton, 0, 1, 1, 1)
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.gridLayout_2.addWidget(self.pushButton_3, 3, 1, 1, 1)
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.gridLayout_2.addWidget(self.pushButton_2, 2, 1, 1, 1)
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
@@ -64,13 +65,7 @@ class Ui_wechatqrcode(object):
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 803, 592))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.gridLayout_2.addWidget(self.scrollArea, 2, 0, 9, 1)
-        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.gridLayout_2.addWidget(self.pushButton_3, 3, 1, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout_2.addWidget(self.label_2, 7, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.scrollArea, 2, 0, 7, 1)
         wechatqrcode.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(wechatqrcode)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1029, 23))
@@ -89,17 +84,15 @@ class Ui_wechatqrcode(object):
 
     def retranslateUi(self, wechatqrcode):
         _translate = QtCore.QCoreApplication.translate
-        wechatqrcode.setWindowTitle(_translate("wechatqrcode", "公众号二维码抓取"))
-        self.label.setText(_translate("wechatqrcode", "代理状态："))
+        wechatqrcode.setWindowTitle(_translate("wechatqrcode", "MainWindow"))
         self.pushButton_4.setText(_translate("wechatqrcode", "关闭系统代理"))
-        self.pushButton_2.setText(_translate("wechatqrcode", "开启抓取服务"))
         self.textBrowser.setHtml(_translate("wechatqrcode", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">使用方法：</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1.先开启抓取服务，服务开启成功后安装证书，下载地址http://mitm.it/cert/p12，密码为空，安装到目录--受信任二点根证书发布者</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">2.开启系统代理，在微信内点开要采集的一篇公众号文章，系统自动抓取登录信息</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1.先安装证书，下载地址http://mitm.it/cert/p12，密码为空，安装到目录根证书发布者</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">2.先开启抓取服务，开启系统代理，在微信内点开要采集的一篇公众号文章，系统自动抓取登录信息</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3.抓取完登录信息后关闭代理即可，需要抓取再打开代理。</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">4.需要提取二维码时，复制公众号历史链接到搜索框，格式为</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">https://mp.weixin.qq.com/mp/profile_ext?action=home&amp;__biz=MjM5MDUxMzc0Mg==&amp;scene=124#wechat_redirect </p>\n"
@@ -108,7 +101,7 @@ class Ui_wechatqrcode(object):
         self.pushButton.setToolTip(_translate("wechatqrcode", "输入公众号链接点击获取"))
         self.pushButton.setText(_translate("wechatqrcode", "获取二维码"))
         self.pushButton_3.setText(_translate("wechatqrcode", "打开系统代理"))
-        self.label_2.setText(_translate("wechatqrcode", "抓取服务状态："))
+        self.pushButton_2.setText(_translate("wechatqrcode", "开启抓取服务"))
         self.menu.setTitle(_translate("wechatqrcode", "菜单"))
 
     def buttonconnect(self):
@@ -117,9 +110,9 @@ class Ui_wechatqrcode(object):
         :return:
         '''
         self.pushButton.clicked.connect(self.mysearch)
-        self.pushButton_2.clicked.connect(lambda:startmimt(self))
-        self.pushButton_3.clicked.connect(lambda:openproxy(self))
-        self.pushButton_4.clicked.connect(lambda:closeproxy(self))
+        self.pushButton_2.clicked.connect(startmimt)
+        self.pushButton_3.clicked.connect(lambda:openproxy(self.centralwidget))
+        self.pushButton_4.clicked.connect(lambda:closeproxy(self.centralwidget))
 
     def mysearch(self):
         newlist = search(self.lineEdit.text(), self.centralwidget, self)

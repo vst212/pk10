@@ -26,7 +26,7 @@ def search(rawurl, qw, self):
         biz = re.search(r"__biz=([^&]+)&?", rawurl).group(1)
         config = readJSON.read('config.json')
         config = config[biz]
-        for move in range(7):
+        for move in range(1):
             res = get_history_api(biz=config['biz'], uin=config['uin'], key=config['key'], offset=10 * move)
             if res['errmsg'] == "ok":
                 # 格式化分类列表
