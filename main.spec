@@ -4,8 +4,8 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\jack\\AppData\\Local\\Programs\\Python\\Python39\\Lib\\site-packages\\pyzbar', 'C:\\Users\\jack\\Desktop\\project\\weixnqr'],
-             binaries=[],
+             pathex=['L:\\Users\\Administrator\\Desktop\\weixnqr'],
+             binaries=[('mitmdump.exe','.'),('addons.py','.'),('data.json','.'),('config.json','.'),('./dll','.')],
              datas=[],
              hiddenimports=[],
              hookspath=[],
