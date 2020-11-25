@@ -9,7 +9,6 @@ import ctypes
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
 
-from myjson import resource_path
 
 _translate = QtCore.QCoreApplication.translate
 
@@ -47,7 +46,7 @@ def closeproxy(qw):
     qw.label.setText(_translate("wechatqrcode", "系统代理状态：已关闭"))
 
 def startmimt(qw):
-    cmd="start %s -s %s -p 6666" %(resource_path('./mitmdump.exe'),resource_path('./addons.py'))
+    cmd=" start %s -s %s -p 6666" %('mitmdump.exe','addons.py')
     os.system(cmd)
     qw.label_2.setText(_translate("wechatqrcode", "抓取服务：已开启"))
 

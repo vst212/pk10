@@ -13,6 +13,8 @@ import readJSON
 from crawlerapi import get_history_api
 from urllib.parse import unquote
 
+from myjson import resource_path
+
 
 def uin_md5(self, uin):
     if "%" in uin:

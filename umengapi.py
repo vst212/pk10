@@ -10,6 +10,7 @@ from requests_toolbelt.utils import dump
 import readJSON
 
 
+
 def getqrimglist(rawurl, qw):
     newlist = []
     localdata = readJSON.read('data.json')

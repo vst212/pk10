@@ -153,7 +153,7 @@ class Ui_umeng(object):
         self.menu.triggered.connect(self.openchild)
 
     def initdata(self):
-        self.data = myjson.read(myjson.resource_path('./data.json'))
+        self.data = myjson.read('./data.json')
         self.mylist = list(self.data.keys())
         for i in self.mylist:
             item = QListWidgetItem(i)
@@ -169,7 +169,7 @@ class Ui_umeng(object):
             # 创建本地缓存  载入时加载本地缓存！
             self.data[text] = []
             self.mylist= list(self.data.keys())
-            myjson.write(myjson.resource_path('./data.json'), self.data)
+            myjson.write('./data.json', self.data)
 
     def chooseitem(self):
         critem = self.listWidget.currentItem().text()
@@ -184,7 +184,7 @@ class Ui_umeng(object):
         if reply == QMessageBox.Yes:
             self.listWidget.takeItem(self.listWidget.currentRow())
             del self.data[critem.text()]
-            myjson.write(myjson.resource_path('./data.json'), self.data)
+            myjson.write('./data.json', self.data)
 
     def cacheimg(self):
         if self.listWidget.currentItem():

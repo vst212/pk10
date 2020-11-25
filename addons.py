@@ -10,10 +10,6 @@ from urllib.parse import unquote
 import hashlib
 import json
 
-def resource_path(relative_path):
-    base_path=getattr(sys,'_MEIPASS',os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path,relative_path)
-
 
 def read(fileName=""):
     if fileName != '':
@@ -29,9 +25,10 @@ def write(filename, new_dict):
         print("写入json完成...")
 
 
+
 import mitmproxy as mp
 
-mykey = read(resource_path("./config.json"))
+mykey = read("config.json")
 
 
 class WeiXinProxy:
@@ -52,13 +49,13 @@ class WeiXinProxy:
                 uin = self.uin_md5(re.search(r"uin=([^&]+)&?", url_path).group(1))
                 hash_key = hashlib.md5(biz.encode("utf-8")).hexdigest()
                 mykey[biz]= {"hash_key": hash_key, "biz": biz, "uin": uin, "key": key}
-                write(resource_path("./config.json"),mykey)
+                write("config.json",mykey)
         if flow.request.host == "m-qun.umeng100.com": # 存储umeng100信息
             url_path = flow.request.path
             cookies = flow.request.cookies # 转换cookies格式为dict
             if cookies:
                 mykey['cookies']=dict(cookies)
-                write(resource_path("./config.json"), mykey)  # 如果不为空保存cookies
+                write("config.json", mykey)  # 如果不为空保存cookies
 
 
 
