@@ -20,7 +20,6 @@ def getqrimglist(rawurl, qw):
 
         for id in menulist:
             res = getimgapi(id, source)
-            time.sleep(10) #间隔10秒获取
             if not res['msg']:
                 imgurl = res['data']  ##添加到data.json 列表
                 newlist.append(imgurl)
@@ -29,7 +28,7 @@ def getqrimglist(rawurl, qw):
                 break
     except Exception as e:
         print(e)
-    localdata[rawurl] = newlist+localdata[rawurl]
+    localdata[rawurl] = {"title":localdata[rawurl]['title'],"pic":newlist+localdata[rawurl]}
     readJSON.write('data.json', localdata)  # 写入到缓存
     return newlist
 

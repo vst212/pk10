@@ -10,8 +10,9 @@ import sys
 
 import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QListWidgetItem, QMessageBox, QWidget, QLabel, QMainWindow, QApplication
+from PyQt5.QtWidgets import QListWidgetItem, QMessageBox, QWidget, QLabel, QMainWindow, QApplication, QHBoxLayout
 
 import myjson
 from getqrcode import search
@@ -20,9 +21,8 @@ from proxy import startmimt, openproxy, closeproxy
 from umengapi import getqrimglist
 
 
+
 class Ui_umeng(object):
-
-
     def setupUi(self, umeng):
         umeng.setObjectName("umeng")
         umeng.resize(1200, 801)
@@ -63,25 +63,6 @@ class Ui_umeng(object):
         self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setMinimumSize(QtCore.QSize(0, 50))
-        self.pushButton_2.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.verticalLayout.addWidget(self.pushButton_2)
-        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setMinimumSize(QtCore.QSize(0, 50))
-        self.pushButton_3.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.verticalLayout.addWidget(self.pushButton_3)
-        self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_5.setMinimumSize(QtCore.QSize(0, 50))
-        self.pushButton_5.setObjectName("pushButton_5")
-        self.verticalLayout.addWidget(self.pushButton_5)
-        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setMinimumSize(QtCore.QSize(0, 50))
-        self.pushButton_4.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.verticalLayout.addWidget(self.pushButton_4)
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setMinimumSize(QtCore.QSize(0, 30))
         self.label_2.setObjectName("label_2")
@@ -98,6 +79,9 @@ class Ui_umeng(object):
         self.listWidget = QtWidgets.QListWidget(self.centralwidget)
         self.listWidget.setObjectName("listWidget")
         self.gridLayout_2.addWidget(self.listWidget, 1, 0, 1, 2)
+        self.listWidget_1 = QtWidgets.QListWidget(self.centralwidget)
+        self.listWidget_1.setObjectName("listWidget")
+        self.gridLayout_2.addWidget(self.listWidget, 1, 1, 1, 2)
         umeng.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(umeng)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1200, 23))
@@ -119,11 +103,7 @@ class Ui_umeng(object):
         _translate = QtCore.QCoreApplication.translate
         umeng.setWindowTitle(_translate("umeng", "微信二维码获取"))
         self.pushButton.setToolTip(_translate("umeng", "输入公众号链接点击获取"))
-        self.pushButton.setText(_translate("umeng", "添加到列表"))
-        self.pushButton_2.setText(_translate("umeng", "开启抓取服务"))
-        self.pushButton_3.setText(_translate("umeng", "打开系统代理"))
-        self.pushButton_5.setText(_translate("umeng", "获取选中链接"))
-        self.pushButton_4.setText(_translate("umeng", "关闭系统代理"))
+        self.pushButton.setText(_translate("umeng", "一键获取"))
         self.label_2.setText(_translate("umeng", "抓取服务状态："))
         self.label.setText(_translate("umeng", "代理状态："))
         self.textBrowser.setHtml(_translate("umeng",
@@ -132,44 +112,53 @@ class Ui_umeng(object):
                                             "p, li { white-space: pre-wrap; }\n"
                                             "</style></head><body style=\" font-family:\'SimSun\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
                                             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">使用方法：</p>\n"
-                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1.先安装证书，下载地址http://mitm.it，密码为空，安装到目录根证书发布者</p>\n"
-                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">2.先开启抓取服务，再开启系统代理，点开公众号内二维码的页面，等待加载完成</p>\n"
-                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3.页面加载完成会自动保存登录信息，此时关闭系统代理。</p>\n"
-                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">4.将二维码页面复制到窗口，回车添加到列表，点击列表内容，点获取选中链接，即可获取到二维码的图片在线更新地址</p>\n"
-                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">在线地址会缓存在本地，每次打开可以自动刷新</p>\n"
-                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">5.双击列表内容可以删除无效资源，获取在线二维码地址为防止频繁设置了等待时间10秒，获取过程会显示转圈为正常，请等待！每个号频繁后换号获取其他链接即可</p></body></html>"))
+                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1.首次使用需要先安装证书，下载地址http://mitm.it，密码为空，安装到目录根证书发布者</p>\n"
+                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">2.打开二维码所在页面，目前支持跟谁学的二维码获取，复制链接粘贴到页面，点击获取即可</p>\n"
+                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3.在线地址会缓存在本地，每次点击选择列表会自动刷新图片</p>\n"
+                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">4.双击列表内容可以删除无效资源，每个号频繁后换号获取其他链接即可</p></body></html>\n" 
+                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">5.复制目录下data.json文件到其他电脑可以共用已经获取到的图片地址"
+                                            ))
         self.menu.setTitle(_translate("umeng", "菜单"))
         self.menu.addAction(_translate("f_1", "公众号文章内二维码抓取"))
+
+
+
 
     def cnbt(self):
         self.pushButton.clicked.connect(self.addtolist)
         self.listWidget.itemClicked.connect(self.chooseitem)
         self.listWidget.itemDoubleClicked.connect(self.doubleck)
-        self.pushButton_2.clicked.connect(lambda: startmimt(self))
-        self.pushButton_3.clicked.connect(lambda: openproxy(self))
-        self.pushButton_4.clicked.connect(lambda: closeproxy(self))
-        self.pushButton_5.clicked.connect(self.cacheimg)
         self.lineEdit.returnPressed.connect(self.addtolist)
         self.menu.triggered.connect(self.openchild)
 
-    def initdata(self):
+    def initdata(self):  ## 程序初始化自动打开代理
         self.data = myjson.read('./data.json')
         self.mylist = list(self.data.keys())
+        startmimt(self)
+        openproxy(self)
         for i in self.mylist:
             item = QListWidgetItem(i)
             self.listWidget.addItem(item)
             piclist = self.data[i]
             self.getcode(piclist)
 
-    def addtolist(self):
+    def addtolist(self):  ## 添加到列表自动获取图片
+        # closeproxy(self)
         text = self.lineEdit.text()
         if text not in self.mylist and text !="":
             item = QListWidgetItem(text)
-            self.listWidget.addItem(item)
-            # 创建本地缓存  载入时加载本地缓存！
+            # item.setSizeHint(QSize(50,50))
+            # layout_right_down = QHBoxLayout()  # 右下的横向布局
+            # layout_right_down.addWidget(QLabel(text))
+            # layout_right_down.addWidget(QLabel("label"))
+            # wg= QWidget()
+            # wg.setLayout(layout_right_down)
+            # self.listWidget.setItemWidget(item, wg)
+            self.listWidget.addItem(item)# 创建本地缓存  载入时加载本地缓存！
             self.data[text] = []
             self.mylist= list(self.data.keys())
             myjson.write('./data.json', self.data)
+        self.cacheimg()
 
     def chooseitem(self):
         critem = self.listWidget.currentItem().text()
@@ -187,9 +176,13 @@ class Ui_umeng(object):
             myjson.write('./data.json', self.data)
 
     def cacheimg(self):
-        if self.listWidget.currentItem():
-            newlist = getqrimglist(self.listWidget.currentItem().text(),self.centralwidget)
+        text = self.lineEdit.text()
+        if text != "":
+            newlist = getqrimglist(text, self.centralwidget)
             self.getcode(newlist)
+        # if self.listWidget.currentItem():
+        #     newlist = getqrimglist(self.listWidget.currentItem().text(),self.centralwidget)
+        #     self.getcode(newlist)
 
 
     def getcode(self,list):

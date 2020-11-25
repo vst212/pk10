@@ -28,14 +28,19 @@ def openproxy(qw):
         internet_set_option(0, INTERNET_OPTION_REFRESH, 0, 0)
         internet_set_option(0, INTERNET_OPTION_SETTINGS_CHANGED, 0, 0)
         set_key('ProxyEnable', 1)
-        set_key('ProxyOverride', u'*.local;<local>')  # Bypass the proxy for localhost
+        try:
+            set_key('ProxyOverride', u'*.local;<local>')  # Bypass the proxy for localhost
+        except Exception as ee:
+            print("没有开启回环！")
+            pass
         set_key('ProxyServer', u'127.0.0.1:6666')
         qw.label.setText(_translate("wechatqrcode", "系统代理状态：已开启"))
     except Exception as  e:
+        print(e,"出错啦！")
         pass
 
 
-def closeproxy(qw):
+def closeproxy():
     INTERNET_OPTION_REFRESH = 37
     INTERNET_OPTION_SETTINGS_CHANGED = 39
     internet_set_option = ctypes.windll.Wininet.InternetSetOptionW
@@ -43,7 +48,6 @@ def closeproxy(qw):
     internet_set_option(0, INTERNET_OPTION_REFRESH, 0, 0)
     internet_set_option(0, INTERNET_OPTION_SETTINGS_CHANGED, 0, 0)
     set_key('ProxyEnable', 0)
-    qw.label.setText(_translate("wechatqrcode", "系统代理状态：已关闭"))
 
 def startmimt(qw):
     cmd=" start %s -s %s -p 6666" %('mitmdump.exe','addons.py')
