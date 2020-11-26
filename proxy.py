@@ -25,8 +25,7 @@ def openproxy(qw):
         INTERNET_OPTION_SETTINGS_CHANGED = 39
         internet_set_option = ctypes.windll.Wininet.InternetSetOptionW
 
-        internet_set_option(0, INTERNET_OPTION_REFRESH, 0, 0)
-        internet_set_option(0, INTERNET_OPTION_SETTINGS_CHANGED, 0, 0)
+
         set_key('ProxyEnable', 1)
         try:
             set_key('ProxyOverride', u'*.local;<local>')  # Bypass the proxy for localhost
@@ -34,7 +33,10 @@ def openproxy(qw):
             print("没有开启回环！")
             pass
         set_key('ProxyServer', u'127.0.0.1:6666')
+        internet_set_option(0, INTERNET_OPTION_REFRESH, 0, 0)
+        internet_set_option(0, INTERNET_OPTION_SETTINGS_CHANGED, 0, 0)
         qw.label.setText(_translate("wechatqrcode", "系统代理状态：已开启"))
+
     except Exception as  e:
         print(e,"出错啦！")
         pass

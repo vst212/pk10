@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['L:\\Users\\Administrator\\Desktop\\weixnqr'],
+             pathex=['C:\\Users\\jack\\Desktop\\project\\weixnqr'],
              binaries=[('mitmdump.exe','.'),('addons.py','.'),('data.json','.'),('config.json','.'),('./dll','.')],
              datas=[],
              hiddenimports=[],

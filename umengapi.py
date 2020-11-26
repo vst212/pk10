@@ -28,7 +28,7 @@ def getqrimglist(rawurl, qw):
                 break
     except Exception as e:
         print(e)
-    localdata[rawurl] = {"title":localdata[rawurl]['title'],"pic":newlist+localdata[rawurl]}
+    localdata[rawurl] = {"title":localdata[rawurl]['title'],"pic":newlist+localdata[rawurl]['pic']}
     readJSON.write('data.json', localdata)  # 写入到缓存
     return newlist
 
