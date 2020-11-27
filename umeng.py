@@ -122,8 +122,6 @@ class Ui_umeng(object):
     def cnbt(self):
         self.pushButton.clicked.connect(self.addtolist)
         self.listWidget.itemClicked.connect(self.chooseitem)
-        self.listWidget.itemClicked.connect(self.savechange)
-        self.listWidget.itemSelectionChanged.connect(self.savechange)
         self.listWidget.itemDoubleClicked.connect(self.doubleck)
         self.lineEdit.returnPressed.connect(self.addtolist)
         self.menu.triggered.connect(self.openchild)
@@ -148,7 +146,7 @@ class Ui_umeng(object):
             text = self.data[i]['title']
             globals()['Qline_' + str(index)] =QLineEdit(text)
             globals()['Qline_' + str(index)].editingFinished.connect(self.savechange)
-            item = QListWidgetItem(i)
+            item = QListWidgetItem()
             item.setSizeHint(QSize(50,50))
             layout_right_down = QHBoxLayout()  # 右下的横向布局
             layout_right_down.addWidget(globals()['Qline_' + str(index)])
@@ -164,22 +162,28 @@ class Ui_umeng(object):
         if text not in self.mylist and text != "":
             self.data[text] ={"title":"未命名","pic":[]}
             self.mylist = list(self.data.keys())
+            self.listWidget.clear()
             self.renderlist(self.mylist)
             myjson.write('./data.json', self.data)
         self.cacheimg()
 
     def chooseitem(self):
-        critem = self.listWidget.currentItem().text()
+        crrow= self.listWidget.currentRow()
+        critem= self.mylist[crrow]
         newlist = self.data[critem]['pic']
         self.getcode(newlist)
 
     def doubleck(self):
-        critem = self.listWidget.currentItem()
+        crrow = self.listWidget.currentRow()
+        critem = self.mylist[crrow]
         reply = QMessageBox.question(self.centralwidget, '删除', '确认删除吗？',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
         if reply == QMessageBox.Yes:
             self.listWidget.takeItem(self.listWidget.currentRow())
             del self.data[critem.text()]
+            self.mylist = list(self.data.keys())
+            self.listWidget.clear()
+            self.renderlist(self.mylist)
             myjson.write('./data.json', self.data)
 
     def cacheimg(self):
