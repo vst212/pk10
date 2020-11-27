@@ -180,7 +180,7 @@ class Ui_umeng(object):
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
         if reply == QMessageBox.Yes:
             self.listWidget.takeItem(self.listWidget.currentRow())
-            del self.data[critem.text()]
+            del self.data[critem]
             self.mylist = list(self.data.keys())
             self.listWidget.clear()
             self.renderlist(self.mylist)
