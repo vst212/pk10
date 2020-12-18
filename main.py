@@ -1,16 +1,9 @@
 
-import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QMessageBox
-
-from mainwindow import Ui_wechatqrcode
-
-
-# if __name__=="__main__":
 import sys
 
-from proxy import closeproxy
-from umeng import Ui_umeng
+from fuck import Ui_MainWindow
 
 class Closewindow(QMainWindow):
     def closeEvent(self, event):
@@ -21,17 +14,13 @@ class Closewindow(QMainWindow):
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
             event.accept()
-            closeproxy()
         else:
             event.ignore()
 
 
 app=QApplication(sys.argv)
 mainwindow=Closewindow()
-# ui=Ui_wechatqrcode()
-# ui.setupUi(mainwindow)
-# mainwindow.show()
-ui=Ui_umeng()
+ui=Ui_MainWindow()
 ui.setupUi(mainwindow)
 mainwindow.show()
 sys.exit(app.exec_())
