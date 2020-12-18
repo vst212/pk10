@@ -65,6 +65,8 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.start)
 
     def login(self):
+        file = open('./10pk.txt', 'w')
+        file.write('----10分pk投注记录----')
         self.cp = CaiPiaoApi(token=self.lineEdit.text())
         yuer = self.cp.getyuer()
         self.label_2.setText(str(yuer))
@@ -75,6 +77,8 @@ class Ui_MainWindow(object):
         self.textBrowser.append(res[3])
         newline = "当前投注期数:%s,投注模式：%s" % (res[1], res[2])
         self.textBrowser.append(newline)
+        with open("./10pk.txt", mode='a') as file:
+            file.write("\n"+res[3]+newline)
         self.textBrowser.moveCursor(self.textBrowser.textCursor().End)
         self.label_2.setText(str(res[0]))
 

@@ -57,15 +57,16 @@ class CaiPiaoApi:
     def kaijiang(self):  # 开奖结果
         url = "https://6970a.com/js/anls-api/data/jssc60/numTrend/100.do"
         res = requests.get(url).json()['bodyList'][0:2]
+        mylog =""
         for openinfo in res:
             qishu = openinfo["issue"]
             opentime = openinfo["openTime"]
             danshuang = self.format_odd(openinfo["openNum"][0])
             logstr = "开奖结果: 期数：%s  开奖时间：%s  <<%s>> \n" % (qishu, opentime, danshuang)
-            self.alllog = logstr
-        print(self.alllog)
+            mylog += logstr
+        print(mylog)
         isequal = (self.format_odd(res[0]["openNum"][0]) == self.format_odd(res[1]["openNum"][0]))
-        return [isequal, self.format_odd(res[0]["openNum"][0]), self.alllog]
+        return [isequal, self.format_odd(res[0]["openNum"][0]), mylog + "\n 余额：<<%s>> \n" % str(self.yuer)]
 
     def bet(self, turnnum, price, mode):  # 押注api
         url = "https://6970a.com/api/bet"
@@ -114,3 +115,4 @@ class CaiPiaoApi:
 
 
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
+# CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
