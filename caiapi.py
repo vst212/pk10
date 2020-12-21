@@ -29,25 +29,98 @@ class CaiPiaoApi:
             lenlist.append(len(tmplist))
             newlist.extend(tmplist)
         print(len(res), len(newlist))
-        count = Counter(lenlist)
-        res = {"count": count, "lenlist": lenlist, "rawlist": res, "newlist": newlist}
-        print(res)
+        count = Counter(lenlist[::-1])
+        sec = newlist[::-1]
+        count2 = Counter(sec)
+        # print(newlist[50:60])
+        res = {"count2": count2, "count": count, "lenlist": lenlist[::-1], "rawlist": res[::-1], "newlist": sec}
+        # self.moni(rawlist=res['newlist'])
+        return  self.judge(rawlist=res['newlist'])
 
-        # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利 490 3个小时
-        return res
+        # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
+        # 490 3个小时
+
+    def moni(self, rawlist):
+        money = 0
+        times = 0
+        for index, current in enumerate(rawlist):
+            if index <= (len(rawlist) - 6):
+                next1 = rawlist[index + 1]
+                next2 = rawlist[index + 2]
+                next3 = rawlist[index + 3]
+                next4 = rawlist[index + 4]
+                next5 = rawlist[index + 5]
+
+                print("START--------------------------------")
+
+                # 连续3吧正确 第四把反向
+                if current != next1 and next1 == next2 and next2 == next3:  ## 稳定
+                    times += 1
+                    if next3 != next4:
+                        money += 1
+                        print(money)
+                    else:
+                        money -= 1
+                        print(money)
+
+                if current != next1 and next1 == next2 and next2 != next3:
+                    times += 1
+                    if next3 == next4:
+                        money += 1
+                        print(money)
+                    else:
+                        money -= 1
+                        print(money)
+
+                if current == next1 and next1 != next2 and next2 == next3:  ## 稳定
+                    times += 1
+                    if next3 == next4:
+                        money += 1
+                        print(money)
+                    else:
+                        money -= 1
+                        print(money)
+
+                print("END--------------------------------")
+
+        print(money, times)
+
+    def judge(self, rawlist):
+        prev4 = rawlist[3]
+        prev3 = rawlist[2]
+        prev2 = rawlist[1]
+        prev1 = rawlist[0]
+        # 连续3吧正确 第四把反向
+        if prev4 != prev3 and prev3 == prev2 and prev2 == prev1:  ## 稳定
+            return {"bet":True,"direction":False}
+
+        if prev4 != prev3  and prev3 == prev2 and prev2 != prev1:
+            return {"bet":True,"direction":True}
+
+        if prev4 == prev3  and prev3 != prev2  and prev2 == prev1:  ## 稳定
+            return {"bet":True,"direction":True}
+
+        return {"bet":False,"direction":True}
 
     def touzhu(self):
         self.yuer = self.getyuer()
         turn = self.getturn()
         kaijiang = self.kaijiang()
-        isequal = kaijiang[0]
+        betinfo = kaijiang[0]
         mode = kaijiang[1]
         alllog = kaijiang[2]
-        self.bet(turn, self.price, mode)
-        if isequal:
+        if not betinfo['bet']:
             return [self.yuer, turn, "不押注", alllog]
         else:
-            self.bet(turn, self.price, mode)
+            if betinfo['direction']:
+                self.bet(turn, self.price, mode)
+            elif mode == "单":
+                mode = "双"
+                self.bet(turn, self.price, mode)
+            else:
+                mode = "单"
+                self.bet(turn, self.price,  mode)
+
         return [self.yuer, turn, mode, alllog]
 
     def stop(self):
@@ -57,7 +130,7 @@ class CaiPiaoApi:
     def kaijiang(self):  # 开奖结果
         url = "https://6970a.com/js/anls-api/data/jssc60/numTrend/100.do"
         res = requests.get(url).json()['bodyList'][0:2]
-        mylog =""
+        mylog = ""
         for openinfo in res:
             qishu = openinfo["issue"]
             opentime = openinfo["openTime"]
@@ -65,8 +138,10 @@ class CaiPiaoApi:
             logstr = "开奖结果: 期数：%s  开奖时间：%s  <<%s>> \n" % (qishu, opentime, danshuang)
             mylog += logstr
         print(mylog)
-        isequal = (self.format_odd(res[0]["openNum"][0]) == self.format_odd(res[1]["openNum"][0]))
-        return [isequal, self.format_odd(res[0]["openNum"][0]), mylog + "\n 余额：<<%s>> \n" % str(self.yuer)]
+        # isequal = (self.format_odd(res[0]["openNum"][0]) == self.format_odd(res[1]["openNum"][0]))
+        betinfo = self.getluzhi()
+
+        return [betinfo, self.format_odd(res[0]["openNum"][0]), mylog + "余额：<<%s>> " % str(self.yuer)]
 
     def bet(self, turnnum, price, mode):  # 押注api
         url = "https://6970a.com/api/bet"
@@ -97,9 +172,9 @@ class CaiPiaoApi:
             "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
             "Cookie": "token=%s" % self.token
         }
-        res = requests.get(url, headers=headers).json()['money']
+        res = requests.get(url, headers=headers).json()
         print(res)
-        return res
+        return res['money']
 
     def getturn(self):  # 获取当前是第几盘
         url = "https://6970a.com/v/lottery/openInfo?gameId=45"
@@ -114,5 +189,7 @@ class CaiPiaoApi:
             return "单"
 
 
+# test074803
+# J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()

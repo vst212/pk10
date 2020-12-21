@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
 
 from caiapi import CaiPiaoApi
 
@@ -39,6 +38,15 @@ class Ui_MainWindow(object):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(110, 210, 121, 51))
         self.pushButton_2.setObjectName("pushButton_2")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_2.setGeometry(QtCore.QRect(20, 100, 311, 20))
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(120, 20, 61, 16))
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(180, 20, 54, 16))
+        self.label_4.setObjectName("label_4")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
@@ -59,10 +67,19 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "余额"))
         self.label_2.setText(_translate("MainWindow", "9999"))
         self.pushButton_2.setText(_translate("MainWindow", "登录"))
+        self.label_3.setText(_translate("MainWindow", "投注金额"))
+        self.label_4.setText(_translate("MainWindow", "100"))
+
 
     def cnbt(self):
         self.pushButton_2.clicked.connect(self.login)
         self.pushButton.clicked.connect(self.start)
+        self.lineEdit_2.editingFinished.connect(self.saveprice)
+
+    def saveprice(self):
+        price= self.lineEdit_2.text()
+        CaiPiaoApi.price = int(price)
+        self.label_4.setText(str(CaiPiaoApi.price))
 
     def login(self):
         file = open('./10pk.txt', 'w')
@@ -73,12 +90,11 @@ class Ui_MainWindow(object):
 
     def starttozhu(self):
         res = self.cp.touzhu()
-        print("sss")
         self.textBrowser.append(res[3])
         newline = "当前投注期数:%s,投注模式：%s" % (res[1], res[2])
-        self.textBrowser.append(newline)
+        self.textBrowser.append(newline + "\n ----------------------------------")
         with open("./10pk.txt", mode='a') as file:
-            file.write("\n"+res[3]+newline)
+            file.write("\n"+res[3]+newline + "\n ----------------------------------")
         self.textBrowser.moveCursor(self.textBrowser.textCursor().End)
         self.label_2.setText(str(res[0]))
 
@@ -87,3 +103,6 @@ class Ui_MainWindow(object):
         scheduler.add_job(self.starttozhu, 'cron', day_of_week='*', hour='*', minute="*", second=20,
                           id="666")  # 每分钟20秒的时候跑一次
         scheduler.start()
+
+#J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
+# %2BABIuzOVNopYX0zloJNqSLdRptqDgx2KMu028LPwtvlADxI75q1g1ZwhHL4blKOgt3R9wQ%3D%3D
