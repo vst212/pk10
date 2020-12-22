@@ -40,65 +40,73 @@ class CaiPiaoApi:
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
 
-    def moni(self, rawlist):
+    def moni(self, rawlist):  # 方案1
         money = 0
         times = 0
         for index, current in enumerate(rawlist):
-            if index <= (len(rawlist) - 6):
+            if index <= (len(rawlist) - 4):
                 next1 = rawlist[index + 1]
                 next2 = rawlist[index + 2]
                 next3 = rawlist[index + 3]
-                next4 = rawlist[index + 4]
-                next5 = rawlist[index + 5]
 
-                print("START--------------------------------")
 
                 # 连续3吧正确 第四把反向
-                if current != next1 and next1 == next2 and next2 == next3:  ## 稳定
+                if current != next1 and next1 == next2:  ## 稳定
                     times += 1
-                    if next3 != next4:
+                    if next3 != next2:
                         money += 1
                         print(money)
                     else:
                         money -= 1
                         print(money)
 
-                if current != next1 and next1 == next2 and next2 != next3:
-                    times += 1
-                    if next3 == next4:
-                        money += 1
-                        print(money)
-                    else:
-                        money -= 1
-                        print(money)
+                # if current != next1 and next1 == next2 and next2 == next3:  ## 稳定
+                #     times += 1
+                #     if next3 != next4:
+                #         money += 1
+                #         print(money)
+                #     else:
+                #         money -= 1
+                #         print(money)
+                #
+                # if current != next1 and next1 == next2 and next2 == next3 and next3 == next4:  ## 稳定
+                #     times += 1
+                #     if next5 != next4:
+                #         money += 1
+                #         print(money)
+                #     else:
+                #         money -= 1
+                #         print(money)
 
-                if current == next1 and next1 != next2 and next2 == next3:  ## 稳定
-                    times += 1
-                    if next3 == next4:
-                        money += 1
-                        print(money)
-                    else:
-                        money -= 1
-                        print(money)
 
-                print("END--------------------------------")
+                # if current != next1 and next1 == next2 and next2 != next3:
+                #     times += 1
+                #     if next3 == next4:
+                #         money += 1
+                #         print(money)
+                #     else:
+                #         money -= 1
+                #         print(money)
+                #
+                # if current == next1 and next1 != next2 and next2 == next3:  ## 稳定
+                #     times += 1
+                #     if next3 == next4:
+                #         money += 1
+                #         print(money)
+                #     else:
+                #         money -= 1
+                #         print(money)
 
         print(money, times)
 
+
     def judge(self, rawlist):
-        prev4 = rawlist[3]
         prev3 = rawlist[2]
         prev2 = rawlist[1]
         prev1 = rawlist[0]
         # 连续3吧正确 第四把反向
-        if prev4 != prev3 and prev3 == prev2 and prev2 == prev1:  ## 稳定
+        if  prev3 != prev2 and prev2 == prev1:  ## 稳定
             return {"bet":True,"direction":False}
-
-        if prev4 != prev3  and prev3 == prev2 and prev2 != prev1:
-            return {"bet":True,"direction":True}
-
-        if prev4 == prev3  and prev3 != prev2  and prev2 == prev1:  ## 稳定
-            return {"bet":True,"direction":True}
 
         return {"bet":False,"direction":True}
 
@@ -192,4 +200,4 @@ class CaiPiaoApi:
 # test074803
 # J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
-# CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
+# CaiPiaoApi(token="J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D").getluzhi()
