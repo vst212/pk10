@@ -84,6 +84,8 @@ class Ui_MainWindow(object):
     def login(self):
         file = open('./10pk.txt', 'w')
         file.write('----10分pk投注记录----')
+        file = open('./luzi.txt', 'w')
+        file.write('----路子----')
         self.cp = CaiPiaoApi(token=self.lineEdit.text())
         yuer = self.cp.getyuer()
         self.label_2.setText(str(yuer))
