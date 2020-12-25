@@ -34,11 +34,12 @@ class CaiPiaoApi:
         count2 = Counter(sec)
         # print(newlist[50:60])
         res = {"count2": count2, "count": count, "lenlist": lenlist[::-1], "rawlist": res[::-1], "newlist": sec}
+        res2 = {"count2": count2, "count": count, "lenlist": lenlist[::-1]}
         moni_res = self.moni(rawlist=res['newlist'])
-        # print(res)
+        print(res2)
         file = open('./luzi.txt', 'a')
         file.write(
-            '---------------- \n' + json.dumps(moni_res) + "\n ----- \n" + json.dumps(res) + '\n ---------------- \n')
+            '---------------- \n' + json.dumps(moni_res) + "\n ----- \n" + json.dumps(res2) + '\n ---------------- \n')
         return self.judge(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
@@ -57,6 +58,12 @@ class CaiPiaoApi:
                 # 顺势而为 稳
 
                 # # 方案0
+                if  current == next1  and next1 !=next2:
+                    times += 1
+                    if next2 == next3:
+                        money +=1
+                    else:
+                        money -=1
 
                 if current != next1 and next1 == next2:  ## 稳定
 
@@ -66,27 +73,20 @@ class CaiPiaoApi:
 
                         money += 1
 
-                        if next4 == next3:
-                            money += 1
-                            print(money)
-                        else:
-                            money -= 1
-                            print(money)
-                        print(money)
+                        # if next4 == next3:
+                        #     money += 1
+                        # else:
+                        #     money -= 1
 
                     else:
                         money -= 1
 
-                        print(money)
-
-                elif current == next1 and next1 != next2 and next3 != next2:  ## 稳定
-                    times += 1
-                    if next4 != next3:
-                        money += 1
-                        print(money)
-                    else:
-                        money -= 1
-                        print(money)
+                # elif current == next1 and next1 != next2 and next3 != next2:  ## 稳定
+                #     times += 1
+                #     if next4 != next3:
+                #         money += 1
+                #     else:
+                #         money -= 1
 
                 # 方案一  13：16   11 71
                 # if current == next1:  ## 稳定
@@ -98,7 +98,7 @@ class CaiPiaoApi:
 
                 # 稳定方案2
 
-        print(money, times)
+        print( {"money": money, "times": times})
         return {"money": money, "times": times}
 
     # 根据短期的开奖记录切换方案
@@ -109,14 +109,18 @@ class CaiPiaoApi:
         prev2 = rawlist[1]
         prev1 = rawlist[0]
 
-        if prev3 != prev2 and prev2 == prev1:  ## 正向投
+        if prev3 != prev2 and prev2 == prev1:  ## 正向投 胜率最稳定预测
             return {"bet": True, "direction": True}
 
-        if prev4 != prev3 and prev3 == prev2 and prev2 == prev1:  ## 正向投
+        if prev3 == prev2 and prev2 != prev1:  ## 正向投 胜率最稳定预测
             return {"bet": True, "direction": True}
 
-        if prev4 == prev3 and prev3 != prev2 and prev2 != prev1:  ## 反向投
-            return {"bet": True, "direction": False}
+
+        # if prev4 != prev3 and prev3 == prev2 and prev2 == prev1:  ## 正向投
+        #     return {"bet": True, "direction": True}
+        #
+        # if prev4 == prev3 and prev3 != prev2 and prev2 != prev1:  ## 反向投
+        #     return {"bet": True, "direction": False}
 
 
 

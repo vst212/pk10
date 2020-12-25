@@ -9,9 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from apscheduler.schedulers.background import BackgroundScheduler
-
-from caiapi import CaiPiaoApi
 
 
 class Ui_MainWindow(object):
@@ -57,7 +54,6 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.cnbt()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -69,43 +65,3 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "登录"))
         self.label_3.setText(_translate("MainWindow", "投注金额"))
         self.label_4.setText(_translate("MainWindow", "100"))
-
-
-    def cnbt(self):
-        self.pushButton_2.clicked.connect(self.login)
-        self.pushButton.clicked.connect(self.start)
-        self.lineEdit_2.editingFinished.connect(self.saveprice)
-
-    def saveprice(self):
-        price= self.lineEdit_2.text()
-        CaiPiaoApi.price = int(price)
-        self.label_4.setText(str(CaiPiaoApi.price))
-
-    def login(self):
-        file = open('./10pk.txt', 'w')
-        file.write('----10分pk投注记录----')
-        file = open('./luzi.txt', 'w')
-        file.write('----路子----')
-        self.cp = CaiPiaoApi(token=self.lineEdit.text())
-        yuer = self.cp.getyuer()
-        self.label_2.setText(str(yuer))
-
-    def starttozhu(self):
-        res = self.cp.touzhu()
-        self.textBrowser.append(res[3])
-        newline = "当前投注期数:%s,投注模式：%s" % (res[1], res[2])
-        self.textBrowser.append(newline + "\n ----------------------------------")
-        with open("./10pk.txt", mode='a') as file:
-            file.write("\n"+res[3]+newline + "\n ----------------------------------")
-        self.textBrowser.moveCursor(self.textBrowser.textCursor().End)
-        self.label_2.setText(str(res[0]))
-
-    def start(self):  # 投注函数  根据上两期的结果进行投注 开完奖就投注 处理各种逻辑
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(self.starttozhu, 'cron', day_of_week='*', hour='*', minute="*", second=20,
-                          id="666")  # 每分钟20秒的时候跑一次
-        scheduler.start()
-
-#J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
-# %2BABIuzOVNopYX0zloJNqSLdRptqDgx2KMu028LPwtvlADxI75q1g1ZwhHL4blKOgt3R9wQ%3D%3D
-#9zObOMjpnWrX9gw09Eqq1ATFyeoEyfLg%2FJ0uAPLdm5CrZGCJuqiYlcY9w%2FpPYJnvA%2BZDFg%3D%3D
