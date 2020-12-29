@@ -365,19 +365,21 @@ class CaiPiaoApi:
 
         arg1 = (current, next1, next2, next3, next4)
         if self.pattern1(*arg1):
+            print(self.pattern1(*arg1))
             return self.pattern1(*arg1)
         if self.pattern2(*arg1):
-            return self.pattern1(*arg1)
+            return self.pattern2(*arg1)
         if self.pattern3(*arg1):
-            return self.pattern1(*arg1)
+            return self.pattern3(*arg1)
         if self.pattern7(*arg1):
-            return self.pattern1(*arg1)
+            return self.pattern7(*arg1)
         if self.pattern5(*arg1):
-            return self.pattern1(*arg1)
+            return self.pattern5(*arg1)
         if self.pattern8(*arg1):
-            return self.pattern1(*arg1)
+            return self.pattern8(*arg1)
         if self.pattern9(*arg1):
-            return self.pattern1(*arg1)
+            return self.pattern9(*arg1)
+        print("不压住")
         return {"bet": False, "direction": True}
 
 
@@ -576,6 +578,8 @@ class CaiPiaoApi:
         # isequal = (self.format_odd(res[0]["openNum"][0]) == self.format_odd(res[1]["openNum"][0]))
         betinfo = self.getluzhi()
 
+        print("betinfo",betinfo)
+
         return [betinfo, self.format_odd(res[0]["openNum"][0]), mylog + "余额：<<%s>> " % str(self.yuer)]
 
     def bet(self, turnnum, price, mode):  # 押注api
@@ -632,5 +636,5 @@ class CaiPiaoApi:
 # J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
-CaiPiaoApi(token="J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D").getluzhi()
+# CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
 

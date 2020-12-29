@@ -102,6 +102,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(str(res[0]))
 
     def start(self):  # 投注函数  根据上两期的结果进行投注 开完奖就投注 处理各种逻辑
+
         scheduler = BackgroundScheduler()
         scheduler.add_job(self.starttozhu, 'cron', day_of_week='*', hour='*', minute="*", second=20,
                           id="666")  # 每分钟20秒的时候跑一次
