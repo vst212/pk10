@@ -27,6 +27,7 @@ class CaiPiaoApi:
         lenlist = []
         luzhiurl = "https://6970a.com/v/lottery/luzhi?gameId=45"
         res = requests.get(luzhiurl).json()[3]['luzhi']
+        print(res)
         for item in res:
             tmplist = item.split(',')
             lenlist.append(len(tmplist))
@@ -340,14 +341,14 @@ class CaiPiaoApi:
                 self.pattern1(*arg1)
                 self.pattern2(*arg1)
                 self.pattern3(*arg1)
-               # --- self.pattern4(*arg1)
+             #  self.pattern4(*arg1)
                 self.pattern5(*arg1)
-               # --- self.pattern6(*arg1)
+           # self.pattern6(*arg1)
                 self.pattern7(*arg1)
                 self.pattern8(*arg1)
                 self.pattern9(*arg1)
 
-        # print(Counter(newlist))
+        print(Counter(newlist))
         file = open('luz99i.txt', 'a')
         file.write(
             "\n ----- \n" + str(Counter(newlist)) + '\n ---------------- \n' + str({"money": self.money, "times": self.times})+ '\n ---------------- \n' )
@@ -636,5 +637,5 @@ class CaiPiaoApi:
 # J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
-# CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
+CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").getluzhi()
 
