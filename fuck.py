@@ -84,7 +84,7 @@ class Ui_MainWindow(object):
     def login(self):
         file = open('./10pk.txt', 'w')
         file.write('----10分pk投注记录----')
-        file = open('./luzi.txt', 'w')
+        file = open('luz99i.txt', 'w')
         file.write('----路子----')
         self.cp = CaiPiaoApi(token=self.lineEdit.text())
         yuer = self.cp.getyuer()
@@ -93,7 +93,8 @@ class Ui_MainWindow(object):
     def starttozhu(self):
         res = self.cp.touzhu()
         self.textBrowser.append(res[3])
-        newline = "当前投注期数:%s,投注模式：%s" % (res[1], res[2])
+        self.label_4.setText(str(CaiPiaoApi.price))
+        newline = "当前投注期数:%s,投注模式：%s,投注金额：%s" % (res[1], res[2],res[4])
         self.textBrowser.append(newline + "\n ----------------------------------")
         with open("./10pk.txt", mode='a') as file:
             file.write("\n"+res[3]+newline + "\n ----------------------------------")
