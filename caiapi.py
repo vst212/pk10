@@ -378,6 +378,7 @@ class CaiPiaoApi:
             return self.pattern1(*arg1)
         if self.pattern9(*arg1):
             return self.pattern1(*arg1)
+        return {"bet": False, "direction": True}
 
 
     def pattern1(self,*args):  # 2 2 1 1 模式
