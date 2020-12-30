@@ -17,6 +17,8 @@ class CaiPiaoApi:
     yuer = 0
 
     money = 0
+    posi = True
+    nega = False
     times = 0
     tmplist = []
 
@@ -45,7 +47,7 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        self.moni2(rawlist=res['newlist'])
+        # self.moni2(rawlist=res['newlist'])
 
         return self.judge2(rawlist=res['newlist'])
 
@@ -334,7 +336,9 @@ class CaiPiaoApi:
 
                 # self.pattern0(*arg1)
                 # self.pattern11(*arg1)
-                self.patter12(*arg1)
+
+                self.patter14(*arg1)
+
                 # self.pattern11(*arg1)
                 # self.pattern10(*arg1)
 
@@ -350,7 +354,8 @@ class CaiPiaoApi:
         print(self.tmplist)
         print(Counter(self.tmplist))
         depart = self.list_depart(self.tmplist)
-        print(depart)
+        print("反向次数",len(depart))
+        print("------------------------- \n")
         print(Counter(depart))
         # print(Counter(newlist))
         file = open('luz99i.txt', 'a')
@@ -389,9 +394,11 @@ class CaiPiaoApi:
 
         arg1 = (current, next1, next2, next3, next4)
 
-        if self.patter12(*arg1):
-            print(self.patter12(*arg1))
-            return self.patter12(*arg1)
+        if self.patter14(*arg1):
+            self.money = 0
+            self.times = 0
+            print(self.patter14(*arg1))
+            return self.patter14(*arg1)
         # if self.pattern1(*arg1):
         #     print(self.pattern1(*arg1))
         #     return self.pattern1(*arg1)
@@ -409,14 +416,49 @@ class CaiPiaoApi:
         #     return self.pattern9(*arg1)
         return {"bet": False, "direction": True}
 
+    def patter13(self, *args):  # 相反方向
+        if args[0] == args[1]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[1] != args[2]:
+                    self.money += 1
+                    self.posi = False
+                    self.nega = True
+                else:
+                    self.money -= 1
+                    self.posi = True
+                    self.nega = False
+                print(self.money)
+            else:  # 投注模式
+                return {"bet": True, "direction": True}
+
+        if args[0] != args[1]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[1] == args[2]:
+                    self.money += 1
+                    self.posi = False
+                    self.nega = True
+                else:
+                    self.money -= 1
+                    self.posi = True
+                    self.nega = False
+                    print(self.money)
+            else:  # 投注模式
+                return {"bet": True, "direction": False}
+
     def patter12(self, *args):  # 买2连
         if args[0] == args[1]:
             self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[1] == args[2]:
                     self.money += 1
+                    self.posi = True
+                    self.nega = False
                 else:
                     self.money -= 1
+                    self.posi = False
+                    self.nega = True
                 print(self.money)
             else:  # 投注模式
                 return {"bet": True, "direction": True}
@@ -426,26 +468,56 @@ class CaiPiaoApi:
             if len(args) >= 6:  # 模拟模式
                 if args[1] != args[2]:
                     self.money += 1
+                    self.posi = True
+                    self.nega = False
+                else:
+                    self.money -= 1
+                    self.posi = False
+                    self.nega = True
+                    print(self.money)
+            else:  # 投注模式
+                return {"bet": True, "direction": False}
+
+
+    def patter14(self, *args):  # 买2连 排除反向的买二连
+        if args[0] != args[1] and args[1] == args[2]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[2] == args[3]:
+                    self.money += 1
+                else:
+                    self.money -= 1
+                print(self.money)
+            else:  # 投注模式
+                return {"bet": True, "direction": True}
+
+        if args[0] == args[1] and args[1] != args[2]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[2] != args[3]:
+                    self.money += 1
                 else:
                     self.money -= 1
                     print(self.money)
             else:  # 投注模式
                 return {"bet": True, "direction": False}
 
+
     def pattern11(self, *args):  # 反买
         self.prev = 0
         if args[0] != args[1]:
             self.tmplist.append("反买")
             print("反买", self.money, "----")
-            self.times += 1
-            self.money += 1
-            self.prev = 1
+            # self.times += 1
+            # self.money += 1
+            # self.prev = 1
         else:
             self.tmplist.append("正买")
             print("正买")
-            self.times += 1
-            self.money -= 1
-            self.prev = 0
+            # self.times += 1
+            # self.money -= 1
+            # self.prev = 0
+
 
     def pattern0(self, *args):  # 买2连
         print(len(args))
@@ -715,7 +787,8 @@ class CaiPiaoApi:
         else:
             return "单"
 
-
+# token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
+# Host: 6970a.com
 #token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
