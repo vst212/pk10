@@ -18,6 +18,7 @@ class CaiPiaoApi:
 
     money = 0
     times = 0
+    tmplist = []
 
     def __init__(self, token):
         self.token = token
@@ -43,7 +44,6 @@ class CaiPiaoApi:
         res = {"count2": count2, "count": count, "lenlist": lenlist[::-1], "rawlist": res[::-1], "newlist": sec}
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
-
 
         self.moni2(rawlist=res['newlist'])
 
@@ -73,7 +73,7 @@ class CaiPiaoApi:
         #     print("不买 单-双=", count190.get('单'), count190.get('双') - count190.get('单'))
         #     return {"bet": False, "direction": '单'}
 
-        #moni_res = self.moni2(rawlist=res['newlist'])
+        # moni_res = self.moni2(rawlist=res['newlist'])
         # print(res)
         # file = open('luz99i.txt', 'a')
         # file.write(
@@ -88,10 +88,10 @@ class CaiPiaoApi:
         realbet = 0
         betmoney = 100
 
-        posi_counter =0
-        nege_counter = 0   # 跟买2把 反买一把
+        posi_counter = 0
+        nege_counter = 0  # 跟买2把 反买一把
 
-        reverse_num  =0
+        reverse_num = 0
         for index, current in enumerate(rawlist):
             final = 20
 
@@ -129,8 +129,6 @@ class CaiPiaoApi:
                 #         realbet -=1
                 #         print("--反向---",money)
 
-
-
                 # 顺势而为 稳
                 # print("index",index)
                 #
@@ -151,7 +149,7 @@ class CaiPiaoApi:
                 #     else:
                 #         money -= 1
 
-                #===========去他妈的方案------------------------------
+                # ===========去他妈的方案------------------------------
                 # if  current != next1  and next1 !=next2 and next2!=next3:
                 #     times += 1
                 #     if next3 != next4:
@@ -173,7 +171,7 @@ class CaiPiaoApi:
                 #         money -= betmoney
                 #         realbet -= 1
                 #         print("betmoney", betmoney)
-                #== == == == == =去他妈的方案 - -----------------------------
+                # == == == == == =去他妈的方案 - -----------------------------
 
                 ## 方案反买 连续反向趋势============================
                 # if  current == next1  and next1 !=next2 and next2!=next3:
@@ -187,7 +185,6 @@ class CaiPiaoApi:
                 #         realbet -= 1
                 #         # print("betmoney", betmoney)
 
-
                 # if current != next1 and next2 == next3 :
                 #     times += 1
                 #     if next3 == next4:
@@ -199,7 +196,6 @@ class CaiPiaoApi:
                 #         money -= betmoney
                 #         realbet -= 1
                 #         print("betmoney", betmoney)
-
 
                 ## =================================================
                 ## 方案反买 连续反向趋势============================
@@ -240,7 +236,6 @@ class CaiPiaoApi:
                 #         realbet -= 1
                 #         print("betmoney", betmoney)
 
-
                 # # 方案0------------------------- 目前最稳定
                 # if  current == next1  and next1 !=next2:
                 #     times += 1
@@ -266,8 +261,6 @@ class CaiPiaoApi:
                 #         money -= betmoney
                 # print("betmoney", betmoney)
                 # # 方案0-------------------------
-
-
 
                 ## 方法6 ---------------------------------------
                 # if current == next1 and next1 == next2 and next2 != next3:
@@ -323,9 +316,9 @@ class CaiPiaoApi:
 
                 # 稳定方案2
 
-        print({ "money": self.money, "times": self.times})
+        print({"money": self.money, "times": self.times})
 
-    def moni2(self,rawlist):
+    def moni2(self, rawlist):
         newlist = []
         for index, current in enumerate(rawlist):
             if index <= len(rawlist) - 7:
@@ -336,28 +329,58 @@ class CaiPiaoApi:
                 next5 = rawlist[index + 5]
                 next6 = rawlist[index + 6]
 
-                arg1 = (current,next1,next2,next3,next4,next5)
+                arg1 = (current, next1, next2, next3, next4, next5)
                 newlist.append(arg1)
-                self.pattern1(*arg1)
-                self.pattern2(*arg1)
-                self.pattern3(*arg1)
-             #  self.pattern4(*arg1)
-                self.pattern5(*arg1)
-           # self.pattern6(*arg1)
-                self.pattern7(*arg1)
-                self.pattern8(*arg1)
-                self.pattern9(*arg1)
 
-        print(Counter(newlist))
+                # self.pattern0(*arg1)
+                # self.pattern11(*arg1)
+                self.patter12(*arg1)
+                # self.pattern11(*arg1)
+                # self.pattern10(*arg1)
+
+            #    self.pattern1(*arg1)
+            #    self.pattern2(*arg1)
+            #    self.pattern3(*arg1)
+            # #  self.pattern4(*arg1)
+            #    self.pattern5(*arg1)
+        # self.pattern6(*arg1)
+        #      self.pattern7(*arg1)
+        #      self.pattern8(*arg1)
+        #      self.pattern9(*arg1)
+        print(self.tmplist)
+        print(Counter(self.tmplist))
+        depart = self.list_depart(self.tmplist)
+        print(depart)
+        print(Counter(depart))
+        # print(Counter(newlist))
         file = open('luz99i.txt', 'a')
         file.write(
-            "\n ----- \n" + str(Counter(newlist)) + '\n ---------------- \n' + str({"money": self.money, "times": self.times})+ '\n ---------------- \n' )
+            "\n ----- \n" + str(Counter(newlist)) + '\n ---------------- \n' + str(
+                {"money": self.money, "times": self.times}) + '\n ---------------- \n')
         print({"money": self.money, "times": self.times})
-
 
     # 根据短期的开奖记录切换方案
 
-    def judge2(self,rawlist):
+    def list_depart(self, c):
+        a = []
+        x = []
+        y = []
+        for i in range(0, len(c)):
+            if i + 1 < len(c):
+                if c[i] == c[i + 1]:
+                    x.append(c[i])
+                else:
+                    x.append(c[i])
+                    a.append(x)
+                    x = []
+            else:
+                x.append(c[len(c) - 1])
+                a.append(x)
+        for i in a:
+            y.append(tuple(i))
+        return y
+
+    def judge2(self, rawlist):
         current = rawlist[4]
         next1 = rawlist[3]
         next2 = rawlist[2]
@@ -365,42 +388,108 @@ class CaiPiaoApi:
         next4 = rawlist[0]
 
         arg1 = (current, next1, next2, next3, next4)
-        if self.pattern1(*arg1):
-            print(self.pattern1(*arg1))
-            return self.pattern1(*arg1)
-        if self.pattern2(*arg1):
-            return self.pattern2(*arg1)
-        if self.pattern3(*arg1):
-            return self.pattern3(*arg1)
-        if self.pattern7(*arg1):
-            return self.pattern7(*arg1)
-        if self.pattern5(*arg1):
-            return self.pattern5(*arg1)
-        if self.pattern8(*arg1):
-            return self.pattern8(*arg1)
-        if self.pattern9(*arg1):
-            return self.pattern9(*arg1)
-        print("不压住")
+
+        if self.patter12(*arg1):
+            print(self.patter12(*arg1))
+            return self.patter12(*arg1)
+        # if self.pattern1(*arg1):
+        #     print(self.pattern1(*arg1))
+        #     return self.pattern1(*arg1)
+        # if self.pattern2(*arg1):
+        #     return self.pattern2(*arg1)
+        # if self.pattern3(*arg1):
+        #     return self.pattern3(*arg1)
+        # if self.pattern7(*arg1):
+        #     return self.pattern7(*arg1)
+        # if self.pattern5(*arg1):
+        #     return self.pattern5(*arg1)
+        # if self.pattern8(*arg1):
+        #     return self.pattern8(*arg1)
+        # if self.pattern9(*arg1):
+        #     return self.pattern9(*arg1)
         return {"bet": False, "direction": True}
 
-
-    def pattern1(self,*args):  # 2 2 1 1 模式
-        #组成新列表进行遍历
-        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3]  and args[3] == args[4]:
-            self.times +=1
-            if len(args) >= 6: #模拟模式
-                if args[4] != args[5]:
-                    self.money +=1
+    def patter12(self, *args):  # 买2连
+        if args[0] == args[1]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[1] == args[2]:
+                    self.money += 1
                 else:
-                    self.money -=1
-            else: # 投注模式
+                    self.money -= 1
+                print(self.money)
+            else:  # 投注模式
+                return {"bet": True, "direction": True}
+
+        if args[0] != args[1]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[1] != args[2]:
+                    self.money += 1
+                else:
+                    self.money -= 1
+                    print(self.money)
+            else:  # 投注模式
                 return {"bet": True, "direction": False}
 
+    def pattern11(self, *args):  # 反买
+        self.prev = 0
+        if args[0] != args[1]:
+            self.tmplist.append("反买")
+            print("反买", self.money, "----")
+            self.times += 1
+            self.money += 1
+            self.prev = 1
+        else:
+            self.tmplist.append("正买")
+            print("正买")
+            self.times += 1
+            self.money -= 1
+            self.prev = 0
 
+    def pattern0(self, *args):  # 买2连
+        print(len(args))
+        if args[0] == args[1]:
+            print("-----------------")
+            print(args)
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[2] == args[1]:
+                    self.money += 1
+                else:
+                    self.money -= 1
+            else:  # 投注模式
+                return {"bet": True, "direction": False}
 
-    def pattern2(self,*args):  # 1 1 2 2  模式
-        if args[0] != args[1] and args[1] != args[2] and args[2] == args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern10(self, *args):  # 买反买
+        print(len(args))
+        if args[0] != args[1]:
+            print("-----------------")
+            print(args)
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[1] != args[2]:
+                    self.money += 1
+                else:
+                    self.money -= 1
+            else:  # 投注模式
+                return {"bet": True, "direction": False}
+
+    def pattern1(self, *args):  # 2 2 1 1 模式
+        # 组成新列表进行遍历
+        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] == args[4]:
+            self.times += 1
+            if len(args) >= 6:  # 模拟模式
+                if args[4] != args[5]:
+                    self.money += 1
+                else:
+                    self.money -= 1
+            else:  # 投注模式
+                return {"bet": True, "direction": False}
+
+    def pattern2(self, *args):  # 1 1 2 2  模式
+        if args[0] != args[1] and args[1] != args[2] and args[2] == args[3] and args[3] != args[4]:
+            self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[4] == args[5]:
                     self.money += 1
@@ -409,10 +498,9 @@ class CaiPiaoApi:
             else:  # 投注模式
                 return {"bet": True, "direction": True}
 
-
-    def pattern3(self,*args):  #  2 2  1 1 模式
-        if args[0] == args[1] and args[1] != args[2] and args[2] == args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern3(self, *args):  # 2 2  1 1 模式
+        if args[0] == args[1] and args[1] != args[2] and args[2] == args[3] and args[3] != args[4]:
+            self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[4] != args[5]:
                     self.money += 1
@@ -421,18 +509,17 @@ class CaiPiaoApi:
             else:  # 投注模式
                 return {"bet": True, "direction": False}
 
-    def pattern4(self,*args):  #  1  2  1 2  模式
-        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern4(self, *args):  # 1  2  1 2  模式
+        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] != args[4]:
+            self.times += 1
             if args[4] == args[5]:
-                self.money +=1
+                self.money += 1
             else:
-                self.money -=1
+                self.money -= 1
 
-
-    def pattern5(self,*args):  #  4 1 1  模式
-        if args[0] == args[1] and args[1] == args[2] and args[2] == args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern5(self, *args):  # 4 1 1  模式
+        if args[0] == args[1] and args[1] == args[2] and args[2] == args[3] and args[3] != args[4]:
+            self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[4] != args[5]:
                     self.money += 1
@@ -441,17 +528,17 @@ class CaiPiaoApi:
             else:  # 投注模式
                 return {"bet": True, "direction": False}
 
-    def pattern6(self,*args):  #  2 1 1 1 1  模式
-        if args[0] == args[1] and args[1] != args[2] and args[2] != args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern6(self, *args):  # 2 1 1 1 1  模式
+        if args[0] == args[1] and args[1] != args[2] and args[2] != args[3] and args[3] != args[4]:
+            self.times += 1
             if args[4] != args[5]:
-                self.money +=1
+                self.money += 1
             else:
-                self.money -=1
+                self.money -= 1
 
-    def pattern7(self,*args):  #  1 2 2  1   模式
-        if args[0] != args[1] and args[1] == args[2] and args[2]  != args[3]  and args[3] == args[4]:
-            self.times +=1
+    def pattern7(self, *args):  # 1 2 2  1   模式
+        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] == args[4]:
+            self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[4] != args[5]:
                     self.money += 1
@@ -460,9 +547,9 @@ class CaiPiaoApi:
             else:  # 投注模式
                 return {"bet": True, "direction": False}
 
-    def pattern8(self,*args):  #  1 3  2   模式
-        if args[0] != args[1] and args[1] == args[2] and args[2]  == args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern8(self, *args):  # 1 3  2   模式
+        if args[0] != args[1] and args[1] == args[2] and args[2] == args[3] and args[3] != args[4]:
+            self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[4] == args[5]:
                     self.money += 1
@@ -471,9 +558,9 @@ class CaiPiaoApi:
             else:  # 投注模式
                 return {"bet": True, "direction": True}
 
-    def pattern9(self,*args):  #  1  2  1  1  1 模式
-        if args[0] != args[1] and args[1] == args[2] and args[2]  != args[3]  and args[3] != args[4]:
-            self.times +=1
+    def pattern9(self, *args):  # 1  2  1  1  1 模式
+        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] != args[4]:
+            self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[4] != args[5]:
                     self.money += 1
@@ -579,7 +666,7 @@ class CaiPiaoApi:
         # isequal = (self.format_odd(res[0]["openNum"][0]) == self.format_odd(res[1]["openNum"][0]))
         betinfo = self.getluzhi()
 
-        print("betinfo",betinfo)
+        print("betinfo", betinfo)
 
         return [betinfo, self.format_odd(res[0]["openNum"][0]), mylog + "余额：<<%s>> " % str(self.yuer)]
 
@@ -628,14 +715,8 @@ class CaiPiaoApi:
         else:
             return "单"
 
-# JSESSIONID=52B9657AF18B2053E32F65BCF851CBEB; token=B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D; account=test015872; accountType=TEST
-#kBUZicKjrK6YsTf1TkLPYquPpRLQEEghtfgFXMUqQyzgMYW%2Fef%2F1UT1C3IJ26anddWiz4w%3D%3D; account=test027325;
 
-# token=Uo90hDBweO%2F2mZCVz7X2juoE40oMUTjyhd%2BBi3QShITH7sGVE9v0yI3BljZnYXfLXMUPcg%3D%3D; account=test821640; accountType=TEST
-# 0YTvQY3DU18oqswIJeOEc5PXi20cvNs3TMN38ad3TAplp8GCFDfmHOKs9VsgtE5dkXeAFA%3D%3D
-# test074803
-# J38GqKbUkB1ZScGhbu0RgJfQB7YvcY0Fez6UHLsTqKUhHbM3xpVZ3FC%2Bo4ENne2knsAKbg%3D%3D
+#token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").getluzhi()
-
