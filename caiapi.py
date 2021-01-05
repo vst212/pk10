@@ -47,40 +47,9 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        # self.moni2(rawlist=res['newlist'])
+        self.moni2(rawlist=res['newlist'])
 
         return self.judge2(rawlist=res['newlist'])
-
-        # if count190.get('单') >= count190.get('双') + 3:
-        #     print("买双", count190.get('双'), count190.get('单') - count190.get('双'))
-        #
-        #     return {"bet": True, "direction": '双'}
-        #
-        # else:
-        #     print("买单", count190.get('双'), count190.get('单') - count190.get('双'))
-        #
-        #     return {"bet": True, "direction": '单'}
-
-        # if count190.get('双') + 5 <= count190.get('单') <= count190.get('双') + 10 or count190.get('单') >= count190.get(
-        #         '双') + 15:
-        #     print("买双", count190.get('双'), count190.get('单') - count190.get('双'))
-        #
-        #     return {"bet": True, "direction": '双'}
-
-        # elif count190.get('单') + 5 <= count190.get('双') <= count190.get('单') + 10 or count190.get('双') >= count190.get(
-        #         '单') + 15:
-        #     print("买单", count190.get('单'), count190.get('双') - count190.get('单'))
-        #     return {"bet": True, "direction": '单'}
-        # else:
-        #     print("不买 单-双=", count190.get('单'), count190.get('双') - count190.get('单'))
-        #     return {"bet": False, "direction": '单'}
-
-        # moni_res = self.moni2(rawlist=res['newlist'])
-        # print(res)
-        # file = open('luz99i.txt', 'a')
-        # file.write(
-        #     '---------------- \n' + json.dumps(moni_res) + "\n ----- \n" + json.dumps(res2) + '\n ---------------- \n')
-        # return self.judge(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
@@ -107,217 +76,6 @@ class CaiPiaoApi:
                 next5 = rawlist[index + 5]
                 next6 = rawlist[index + 6]
 
-                #
-                # if  realbet >= 10:
-                #     print("10kuai>",money)
-                #     if current != next1:
-                #         money +=1
-                #         realbet += 1
-                #         print("正向",money)
-                #     if current == next1:
-                #         money -= 1
-                #         print("--反向---",money)
-                #     if  realbet >=20:
-                #         realbet = 0
-                #
-                # else:
-                #     print("10小于")
-                #     if current == next1:
-                #         money +=1
-                #         realbet +=1
-                #         print("正向",money)
-                #     if current != next1:
-                #         money -= 1
-                #         realbet -=1
-                #         print("--反向---",money)
-
-                # 顺势而为 稳
-                # print("index",index)
-                #
-                # print(Counter(rawlist[index:index + final]))
-                #
-                # rest = self.calculate_times(rawlist[index:index + final])
-                #
-                # if not rest:
-                #     times += 1
-                #     if rawlist[index + final -1] == rawlist[index + final]:
-                #         money += 1
-                #     else:
-                #         money -= 1
-                # else:
-                #     times += 1
-                #     if rawlist[index + final -1] != rawlist[index + final]:
-                #         money += 1
-                #     else:
-                #         money -= 1
-
-                # ===========去他妈的方案------------------------------
-                # if  current != next1  and next1 !=next2 and next2!=next3:
-                #     times += 1
-                #     if next3 != next4:
-                #         realbet += 1
-                #         money += betmoney
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         # print("betmoney", betmoney)
-                # #
-                # if  current == next1  and next1 ==next2 and next2 ==next3:
-                #     times += 1
-                #     if next3 == next4:
-                #         realbet += 1
-                #         money += betmoney
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         print("betmoney", betmoney)
-                # == == == == == =去他妈的方案 - -----------------------------
-
-                ## 方案反买 连续反向趋势============================
-                # if  current == next1  and next1 !=next2 and next2!=next3:
-                #     times += 1
-                #     if next3 == next4:
-                #         realbet += 1
-                #         money += betmoney
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         # print("betmoney", betmoney)
-
-                # if current != next1 and next2 == next3 :
-                #     times += 1
-                #     if next3 == next4:
-                #         realbet += 1
-                #         money += betmoney
-                #
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         print("betmoney", betmoney)
-
-                ## =================================================
-                ## 方案反买 连续反向趋势============================
-                # if current == next1 and next1 == next2 and next2 != next3 and next4 != next5:
-                #     times += 1
-                #     if next6 != next5:
-                #         realbet += 1
-                #         money += betmoney
-                #
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         print("betmoney", betmoney)
-
-                # ## 方案反买 连续反向趋势============================  胜率最高
-                # if current == next1 and next1 != next2 and next2 != next3 and next4 == next5:
-                #     times += 1
-                #     if next6 == next5:
-                #         realbet += 1
-                #         money += betmoney
-                #
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         print("betmoney", betmoney)
-                # ## =================================================
-                #
-                # if current != next1 and next1 == next2 and next2 == next3 and next5== next4:
-                #     times += 1
-                #     if next5 == next6:
-                #         realbet += 1
-                #         money += betmoney
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         print("betmoney", betmoney)
-
-                # # 方案0------------------------- 目前最稳定
-                # if  current == next1  and next1 !=next2:
-                #     times += 1
-                #     if next2 == next3:
-                #         realbet += 1
-                #         money += betmoney
-                #         # print( "betmoney",betmoney)
-                #     else:
-                #         money -= betmoney
-                #         realbet -= 1
-                #         print("betmoney", betmoney)
-                #
-                # if current != next1 and next1 == next2:  ## 稳定
-                #
-                #     times += 1
-                #
-                #     if next2 == next3:
-                #         realbet += 1
-                #         money += betmoney
-                #         # print("betmoney", betmoney)
-                #     else:
-                #         realbet -= 1
-                #         money -= betmoney
-                # print("betmoney", betmoney)
-                # # 方案0-------------------------
-
-                ## 方法6 ---------------------------------------
-                # if current == next1 and next1 == next2 and next2 != next3:
-                #     times += 1
-                #     if next3 != next4:
-                #         money += 1
-                #         print(money)
-                #     else:
-                #         money -= 1
-                #
-                # if current != next1 and next1 != next2 and next2 == next3:
-                #     times += 1
-                #     if next3 == next4:
-                #         money += 1
-                #     else:
-                #         money -= 1
-                ## 方法6 ----------------------------------------------
-
-                # if current == next1 and next1 != next2 and next3 != next2:  ## 稳定
-                #     times += 1
-                #     if next4 != next3:
-                #         money += 1
-                #     else:
-                #         money -= 1
-
-                # #方案一  13：16   11 71
-                # if current == next1:  ## 稳定
-                #     times += 1
-                #     if next3 != next2:
-                #         money += 1
-                #     else:
-                #         money -= 1
-                # -----------------------------------------
-
-                # betmoney = betmoney * 2
-                # -------------------------------------------
-
-                # if current == next1:
-                #     times +=1
-                #     if next1 != next2:
-                #         money += 1
-                #     else:
-                #         money -= 1
-                #     # betmoney = betmoney / 2
-                # else:
-                #     times += 1
-                #     if next1 == next2:
-                #         money += 1
-                #     else:
-                #         money -= 1
-                #     # betmoney = betmoney * 2
-                #     print( betmoney)
-
-                # 稳定方案2
-
         print({"money": self.money, "times": self.times})
 
     def moni2(self, rawlist):
@@ -334,27 +92,17 @@ class CaiPiaoApi:
                 arg1 = (current, next1, next2, next3, next4, next5)
                 newlist.append(arg1)
 
-                # self.pattern0(*arg1)
-                # self.pattern11(*arg1)
+                eqcount = self.judge_list(arg1)
 
-                self.patter14(*arg1)
+                if eqcount >= 3:
+                    self.patter13(*arg1)
+                else:
+                    self.patter12(*arg1)
 
-                # self.pattern11(*arg1)
-                # self.pattern10(*arg1)
-
-            #    self.pattern1(*arg1)
-            #    self.pattern2(*arg1)
-            #    self.pattern3(*arg1)
-            # #  self.pattern4(*arg1)
-            #    self.pattern5(*arg1)
-        # self.pattern6(*arg1)
-        #      self.pattern7(*arg1)
-        #      self.pattern8(*arg1)
-        #      self.pattern9(*arg1)
         print(self.tmplist)
         print(Counter(self.tmplist))
         depart = self.list_depart(self.tmplist)
-        print("反向次数",len(depart))
+        print("反向次数", len(depart))
         print("------------------------- \n")
         print(Counter(depart))
         # print(Counter(newlist))
@@ -394,250 +142,74 @@ class CaiPiaoApi:
 
         arg1 = (current, next1, next2, next3, next4)
 
-        if self.patter14(*arg1):
-            self.money = 0
-            self.times = 0
-            print(self.patter14(*arg1))
-            return self.patter14(*arg1)
-        # if self.pattern1(*arg1):
-        #     print(self.pattern1(*arg1))
-        #     return self.pattern1(*arg1)
-        # if self.pattern2(*arg1):
-        #     return self.pattern2(*arg1)
-        # if self.pattern3(*arg1):
-        #     return self.pattern3(*arg1)
-        # if self.pattern7(*arg1):
-        #     return self.pattern7(*arg1)
-        # if self.pattern5(*arg1):
-        #     return self.pattern5(*arg1)
-        # if self.pattern8(*arg1):
-        #     return self.pattern8(*arg1)
-        # if self.pattern9(*arg1):
-        #     return self.pattern9(*arg1)
-        return {"bet": False, "direction": True}
+        eqcount = self.judge_list(arg1)
 
-    def patter13(self, *args):  # 相反方向
-        if args[0] == args[1]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[1] != args[2]:
-                    self.money += 1
-                    self.posi = False
-                    self.nega = True
-                else:
-                    self.money -= 1
-                    self.posi = True
-                    self.nega = False
-                print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": True}
-
-        if args[0] != args[1]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[1] == args[2]:
-                    self.money += 1
-                    self.posi = False
-                    self.nega = True
-                else:
-                    self.money -= 1
-                    self.posi = True
-                    self.nega = False
-                    print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-    def patter12(self, *args):  # 买2连
-        if args[0] == args[1]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[1] == args[2]:
-                    self.money += 1
-                    self.posi = True
-                    self.nega = False
-                else:
-                    self.money -= 1
-                    self.posi = False
-                    self.nega = True
-                print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": True}
-
-        if args[0] != args[1]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[1] != args[2]:
-                    self.money += 1
-                    self.posi = True
-                    self.nega = False
-                else:
-                    self.money -= 1
-                    self.posi = False
-                    self.nega = True
-                    print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-
-    def patter14(self, *args):  # 买2连 排除反向的买二连
-        if args[0] != args[1] and args[1] == args[2]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[2] == args[3]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-                print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": True}
-
-        if args[0] == args[1] and args[1] != args[2]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[2] != args[3]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-                    print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-
-    def pattern11(self, *args):  # 反买
-        self.prev = 0
-        if args[0] != args[1]:
-            self.tmplist.append("反买")
-            print("反买", self.money, "----")
-            # self.times += 1
-            # self.money += 1
-            # self.prev = 1
+        if eqcount >= 3:
+            return self.patter13(*arg1)
         else:
-            self.tmplist.append("正买")
-            print("正买")
-            # self.times += 1
-            # self.money -= 1
-            # self.prev = 0
+            return self.patter12(*arg1)
 
+    def patter12(self, *args):  # 反买
+        # 对近5把进行判断
 
-    def pattern0(self, *args):  # 买2连
-        print(len(args))
+        self.times += 1
+        if len(args) >= 6:  # 模拟模式
+            if args[1] != args[2]:
+                self.money += 1
+            else:
+                self.money -= 1
+            print(self.money)
+        else:  # 投注模式
+            return {"bet": True, "direction": False}
+
+    def patter13(self, *args):  # 正买
+        self.times += 1
+        if len(args) >= 6:  # 模拟模式
+            if args[1] == args[2]:
+                self.money += 1
+            else:
+                self.money -= 1
+            print(self.money)
+        else:  # 投注模式
+            return {"bet": True, "direction": True}
+
+    def judge_list(self, rawlist):
+        eqcount = 0
+        for index, item in enumerate(rawlist):
+            if index < len(rawlist) - 1:
+                if item == rawlist[index + 1]:
+                    eqcount += 1
+        print("----" + str(eqcount) + "---------")
+        return eqcount
+
+    def patter112(self, *args):  # 买2连
         if args[0] == args[1]:
-            print("-----------------")
-            print(args)
             self.times += 1
             if len(args) >= 6:  # 模拟模式
-                if args[2] == args[1]:
+                if args[1] == args[2]:
                     self.money += 1
+                    self.posi = True
+                    self.nega = False
                 else:
                     self.money -= 1
+                    self.posi = False
+                    self.nega = True
+                print(self.money)
             else:  # 投注模式
-                return {"bet": True, "direction": False}
+                return {"bet": True, "direction": True}
 
-    def pattern10(self, *args):  # 买反买
-        print(len(args))
         if args[0] != args[1]:
-            print("-----------------")
-            print(args)
             self.times += 1
             if len(args) >= 6:  # 模拟模式
                 if args[1] != args[2]:
                     self.money += 1
+                    self.posi = True
+                    self.nega = False
                 else:
                     self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-    def pattern1(self, *args):  # 2 2 1 1 模式
-        # 组成新列表进行遍历
-        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] == args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] != args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-    def pattern2(self, *args):  # 1 1 2 2  模式
-        if args[0] != args[1] and args[1] != args[2] and args[2] == args[3] and args[3] != args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] == args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": True}
-
-    def pattern3(self, *args):  # 2 2  1 1 模式
-        if args[0] == args[1] and args[1] != args[2] and args[2] == args[3] and args[3] != args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] != args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-    def pattern4(self, *args):  # 1  2  1 2  模式
-        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] != args[4]:
-            self.times += 1
-            if args[4] == args[5]:
-                self.money += 1
-            else:
-                self.money -= 1
-
-    def pattern5(self, *args):  # 4 1 1  模式
-        if args[0] == args[1] and args[1] == args[2] and args[2] == args[3] and args[3] != args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] != args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-    def pattern6(self, *args):  # 2 1 1 1 1  模式
-        if args[0] == args[1] and args[1] != args[2] and args[2] != args[3] and args[3] != args[4]:
-            self.times += 1
-            if args[4] != args[5]:
-                self.money += 1
-            else:
-                self.money -= 1
-
-    def pattern7(self, *args):  # 1 2 2  1   模式
-        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] == args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] != args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
-
-    def pattern8(self, *args):  # 1 3  2   模式
-        if args[0] != args[1] and args[1] == args[2] and args[2] == args[3] and args[3] != args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] == args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
-            else:  # 投注模式
-                return {"bet": True, "direction": True}
-
-    def pattern9(self, *args):  # 1  2  1  1  1 模式
-        if args[0] != args[1] and args[1] == args[2] and args[2] != args[3] and args[3] != args[4]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[4] != args[5]:
-                    self.money += 1
-                else:
-                    self.money -= 1
+                    self.posi = False
+                    self.nega = True
+                    print(self.money)
             else:  # 投注模式
                 return {"bet": True, "direction": False}
 
@@ -787,9 +359,10 @@ class CaiPiaoApi:
         else:
             return "单"
 
+
 # token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
 # Host: 6970a.com
-#token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
+# token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").getluzhi()
