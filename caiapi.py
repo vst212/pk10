@@ -365,4 +365,5 @@ class CaiPiaoApi:
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
-CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").getluzhi()
+# CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").getluzhi()
+#md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
