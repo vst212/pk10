@@ -37,7 +37,7 @@ class CaiPiaoApi:
             newlist.extend(tmplist)
         print(len(res), len(newlist))
         count = Counter(lenlist[::-1])
-        sec = newlist[::-1]
+        sec = newlist
         count2 = Counter(sec)
         # print(newlist[50:60])
         count190 = Counter(sec[0:199])
@@ -48,6 +48,10 @@ class CaiPiaoApi:
                 "lenlist": lenlist[::-1], "newlist": sec}
 
         self.moni2(rawlist=res['newlist'])
+
+        print(res['newlist'])
+
+        print(self.judge2(rawlist=res['newlist']))
 
         return self.judge2(rawlist=res['newlist'])
 
@@ -134,15 +138,17 @@ class CaiPiaoApi:
         return y
 
     def judge2(self, rawlist):
-        current = rawlist[4]
-        next1 = rawlist[3]
-        next2 = rawlist[2]
-        next3 = rawlist[1]
-        next4 = rawlist[0]
+        current = rawlist[-5]
+        next1 = rawlist[-4]
+        next2 = rawlist[-3]
+        next3 = rawlist[-2]
+        next4 = rawlist[-1]
 
         arg1 = (current, next1, next2, next3, next4)
 
         eqcount = self.judge_list(arg1)
+
+        print("Eqcount",eqcount)
 
         if eqcount >= 3:
             return self.patter13(*arg1)
@@ -154,22 +160,20 @@ class CaiPiaoApi:
 
         self.times += 1
         if len(args) >= 6:  # 模拟模式
-            if args[1] != args[2]:
+            if args[4] != args[5]:
                 self.money += 1
             else:
                 self.money -= 1
-            print(self.money)
         else:  # 投注模式
             return {"bet": True, "direction": False}
 
     def patter13(self, *args):  # 正买
         self.times += 1
         if len(args) >= 6:  # 模拟模式
-            if args[1] == args[2]:
+            if args[4] == args[5]:
                 self.money += 1
             else:
                 self.money -= 1
-            print(self.money)
         else:  # 投注模式
             return {"bet": True, "direction": True}
 
@@ -179,7 +183,6 @@ class CaiPiaoApi:
             if index < len(rawlist) - 1:
                 if item == rawlist[index + 1]:
                     eqcount += 1
-        print("----" + str(eqcount) + "---------")
         return eqcount
 
     def patter112(self, *args):  # 买2连
@@ -266,20 +269,6 @@ class CaiPiaoApi:
         if not betinfo['bet']:
             return [self.yuer, turn, "不押注", alllog, self.price]
         else:
-            # if chajia > 0:
-            #     self.price = self.price * 2
-            #     self.bet(turn, self.price, mode)
-            # elif chajia < 0:
-            #     self.price = self.price / 2
-            #     self.bet(turn, self.price, mode)
-            # else:
-            #     self.bet(turn, self.price, mode)
-            # if chajia >= 0:
-            #     self.price = 100   # 固定100投注 输了减少投注
-            #     self.bet(turn, self.price, betinfo['direction'])
-            # elif chajia < 0:
-            #     self.price = self.price / 2
-            #     self.bet(turn, self.price, betinfo['direction'])
             if betinfo['direction']:
                 self.bet(turn, self.price, mode)
             elif mode == "单":
@@ -298,6 +287,7 @@ class CaiPiaoApi:
     def kaijiang(self):  # 开奖结果
         url = "https://6970a.com/js/anls-api/data/jssc60/numTrend/100.do"
         res = requests.get(url).json()['bodyList'][0:2]
+        print("开奖：",res)
         mylog = ""
         for index, openinfo in enumerate(res):
             if index == 0:
@@ -365,5 +355,6 @@ class CaiPiaoApi:
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
 # CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
-# CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").getluzhi()
+# CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
+#token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
 #md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
