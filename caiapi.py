@@ -98,14 +98,28 @@ class CaiPiaoApi:
 
                 # print("近6把", arg1,"正买正确次数",eqcount)
 
-                if eqcount >= 4:
-                    self.patter13(*arg1)
-                elif eqcount == 3:
+                if eqcount > 4:
                     self.patter12(*arg1)
-                if eqcount == 2:
+                if eqcount == 4:
                     self.patter13(*arg1)
+                if eqcount == 3:
+                    self.patter12(*arg1)
                 if eqcount == 1:
-                    self.patter13(*arg1)
+                    self.patter12(*arg1)
+
+                # if eqcount == 2:
+                #     self.patter13(*arg1)
+                # if eqcount == 1:
+                #     self.patter13(*arg1)
+
+                # if eqcount >= 4:
+                #     self.patter13(*arg1)
+                # else:
+                #     self.patter12(*arg1)
+                # if eqcount == 3:
+                #     self.patter12(*arg1)
+                # if eqcount <= 1:
+                #     self.patter12(*arg1)
         #
         # print(self.tmplist)
         # print(Counter(self.tmplist))
@@ -155,14 +169,15 @@ class CaiPiaoApi:
 
         print("Eqcount", eqcount)
 
-        if eqcount >= 4:
-            self.patter13(*arg1)
-        elif eqcount == 3:
-            self.patter12(*arg1)
-        if eqcount == 2:
-            self.patter13(*arg1)
+        if eqcount > 4:
+            return self.patter12(*arg1)
+        if eqcount == 4:
+            return self.patter13(*arg1)
+        if eqcount == 3:
+            return self.patter12(*arg1)
         if eqcount == 1:
-            self.patter13(*arg1)
+            return self.patter12(*arg1)
+        return  {"bet": False, "direction": False}
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
