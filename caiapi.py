@@ -26,6 +26,8 @@ class CaiPiaoApi:
         self.token = token
 
     def getluzhi(self):  # 历史记录
+        self.money = 0
+        self.times = 0
         newlist = []
         lenlist = []
         luzhiurl = "https://6970a.com/v/lottery/luzhi?gameId=45"
@@ -35,23 +37,19 @@ class CaiPiaoApi:
             tmplist = item.split(',')
             lenlist.append(len(tmplist))
             newlist.extend(tmplist)
-        print(len(res), len(newlist))
+        # print(len(res), len(newlist))
         count = Counter(lenlist[::-1])
         sec = newlist
         count2 = Counter(sec)
         # print(newlist[50:60])
         count190 = Counter(sec[0:199])
-        print(count190.get('单'))
-        print(count190.get('双'))
+        # print(count190.get('单'))
+        # print(count190.get('双'))
         res = {"count2": count2, "count": count, "lenlist": lenlist[::-1], "rawlist": res[::-1], "newlist": sec}
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
         self.moni2(rawlist=res['newlist'])
-
-        print(res['newlist'])
-
-        print(self.judge2(rawlist=res['newlist']))
 
         return self.judge2(rawlist=res['newlist'])
 
@@ -93,22 +91,28 @@ class CaiPiaoApi:
                 next5 = rawlist[index + 5]
                 next6 = rawlist[index + 6]
 
-                arg1 = (current, next1, next2, next3, next4, next5)
+                arg1 = (current, next1, next2, next3, next4, next5, next6)
                 newlist.append(arg1)
 
                 eqcount = self.judge_list(arg1)
 
-                if eqcount >= 3:
-                    self.patter13(*arg1)
-                else:
-                    self.patter12(*arg1)
+                # print("近6把", arg1,"正买正确次数",eqcount)
 
-        print(self.tmplist)
-        print(Counter(self.tmplist))
+                if eqcount >= 4:
+                    self.patter13(*arg1)
+                elif eqcount == 3:
+                    self.patter12(*arg1)
+                if eqcount == 2:
+                    self.patter13(*arg1)
+                if eqcount == 1:
+                    self.patter13(*arg1)
+        #
+        # print(self.tmplist)
+        # print(Counter(self.tmplist))
         depart = self.list_depart(self.tmplist)
-        print("反向次数", len(depart))
-        print("------------------------- \n")
-        print(Counter(depart))
+        # print("反向次数", len(depart))
+        # print("------------------------- \n")
+        # print(Counter(depart))
         # print(Counter(newlist))
         file = open('luz99i.txt', 'a')
         file.write(
@@ -138,29 +142,34 @@ class CaiPiaoApi:
         return y
 
     def judge2(self, rawlist):
+        zero = rawlist[-6]
         current = rawlist[-5]
         next1 = rawlist[-4]
         next2 = rawlist[-3]
         next3 = rawlist[-2]
         next4 = rawlist[-1]
 
-        arg1 = (current, next1, next2, next3, next4)
+        arg1 = (zero, current, next1, next2, next3, next4)
 
         eqcount = self.judge_list(arg1)
 
-        print("Eqcount",eqcount)
+        print("Eqcount", eqcount)
 
-        if eqcount >= 3:
-            return self.patter13(*arg1)
-        else:
-            return self.patter12(*arg1)
+        if eqcount >= 4:
+            self.patter13(*arg1)
+        elif eqcount == 3:
+            self.patter12(*arg1)
+        if eqcount == 2:
+            self.patter13(*arg1)
+        if eqcount == 1:
+            self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
 
         self.times += 1
-        if len(args) >= 6:  # 模拟模式
-            if args[4] != args[5]:
+        if len(args) >= 7:  # 模拟模式
+            if args[5] != args[6]:
                 self.money += 1
             else:
                 self.money -= 1
@@ -169,8 +178,8 @@ class CaiPiaoApi:
 
     def patter13(self, *args):  # 正买
         self.times += 1
-        if len(args) >= 6:  # 模拟模式
-            if args[4] == args[5]:
+        if len(args) >= 7:  # 模拟模式
+            if args[5] == args[6]:
                 self.money += 1
             else:
                 self.money -= 1
@@ -180,53 +189,21 @@ class CaiPiaoApi:
     def judge_list(self, rawlist):
         eqcount = 0
         for index, item in enumerate(rawlist):
-            if index < len(rawlist) - 1:
+            if index < len(rawlist) - 2:
                 if item == rawlist[index + 1]:
                     eqcount += 1
         return eqcount
 
-    def patter112(self, *args):  # 买2连
-        if args[0] == args[1]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[1] == args[2]:
-                    self.money += 1
-                    self.posi = True
-                    self.nega = False
-                else:
-                    self.money -= 1
-                    self.posi = False
-                    self.nega = True
-                print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": True}
-
-        if args[0] != args[1]:
-            self.times += 1
-            if len(args) >= 6:  # 模拟模式
-                if args[1] != args[2]:
-                    self.money += 1
-                    self.posi = True
-                    self.nega = False
-                else:
-                    self.money -= 1
-                    self.posi = False
-                    self.nega = True
-                    print(self.money)
-            else:  # 投注模式
-                return {"bet": True, "direction": False}
 
     def calculate_times(self, rawlist):
         single = 0
         lianxu = 0
-        print(rawlist)
         for index, current in enumerate(rawlist):
             if index < len(rawlist) - 1:
                 if rawlist[index] == rawlist[index + 1]:
                     lianxu += 1
                 else:
                     single += 1
-        print(single - lianxu)
         return single - lianxu > 0 and False or True
 
     def get_percent(self, rawlist):
@@ -287,7 +264,7 @@ class CaiPiaoApi:
     def kaijiang(self):  # 开奖结果
         url = "https://6970a.com/js/anls-api/data/jssc60/numTrend/100.do"
         res = requests.get(url).json()['bodyList'][0:2]
-        print("开奖：",res)
+        print("开奖：", res)
         mylog = ""
         for index, openinfo in enumerate(res):
             if index == 0:
@@ -325,7 +302,7 @@ class CaiPiaoApi:
         }
 
         res = requests.post(url, json=data, headers=headers).json()
-        print(headers, data, res)
+        # print(headers, data, res)
 
     def getyuer(self):
         url = "https://6970a.com/api/user/status"
@@ -353,8 +330,8 @@ class CaiPiaoApi:
 # token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
 # Host: 6970a.com
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
-# CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").touzhu()
+CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 # CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
-#token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
-#md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
+# token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
+# md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
