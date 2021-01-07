@@ -83,43 +83,35 @@ class CaiPiaoApi:
     def moni2(self, rawlist):
         newlist = []
         for index, current in enumerate(rawlist):
-            if index <= len(rawlist) - 7:
+            if index <= len(rawlist) - 11:
                 next1 = rawlist[index + 1]
                 next2 = rawlist[index + 2]
                 next3 = rawlist[index + 3]
                 next4 = rawlist[index + 4]
                 next5 = rawlist[index + 5]
                 next6 = rawlist[index + 6]
+                next7 = rawlist[index + 7]
+                next8 = rawlist[index + 8]
+                next9 = rawlist[index + 9]
+                next10 = rawlist[index + 10]
 
-                arg1 = (current, next1, next2, next3, next4, next5, next6)
+                arg1 = (current, next1, next2, next3, next4, next5, next6, next7, next8, next9, next10)
                 newlist.append(arg1)
 
                 eqcount = self.judge_list(arg1)
 
-                # print("近6把", arg1,"正买正确次数",eqcount)
-
                 # self.patter12(*arg1)
 
-
-
-                if eqcount == 2:
+                if eqcount < 5:
+                    # 反买
                     self.patter13(*arg1)
-                else:
+
+                if eqcount == 5:
                     self.patter12(*arg1)
 
-                # if eqcount == 2:
-                #     self.patter13(*arg1)
-                # if eqcount == 1:
-                #     self.patter13(*arg1)
+                if eqcount > 5:
+                    self.patter13(*arg1)
 
-                # if eqcount >= 4:
-                #     self.patter13(*arg1)
-                # else:
-                #     self.patter12(*arg1)
-                # if eqcount == 3:
-                #     self.patter12(*arg1)
-                # if eqcount <= 1:
-                #     self.patter12(*arg1)
         #
         # print(self.tmplist)
         # print(Counter(self.tmplist))
@@ -156,6 +148,10 @@ class CaiPiaoApi:
         return y
 
     def judge2(self, rawlist):
+        t = rawlist[-10]
+        n = rawlist[-9]
+        e = rawlist[-8]
+        s = rawlist[-7]
         zero = rawlist[-6]
         current = rawlist[-5]
         next1 = rawlist[-4]
@@ -163,23 +159,28 @@ class CaiPiaoApi:
         next3 = rawlist[-2]
         next4 = rawlist[-1]
 
-        arg1 = (zero, current, next1, next2, next3, next4)
+        arg1 = (t, n, e, s, zero, current, next1, next2, next3, next4,)
 
-        eqcount = self.judge_list(arg1)
+        eqcount = self.judge_list_real(arg1)
 
         print("Eqcount", eqcount)
 
-        if eqcount == 2:
+        if eqcount < 5:
+            # 反买
             return self.patter13(*arg1)
-        else:
+
+        if eqcount == 5:
             return self.patter12(*arg1)
+
+        if eqcount > 5:
+            return self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
 
         self.times += 1
-        if len(args) >= 7:  # 模拟模式
-            if args[5] != args[6]:
+        if len(args) >= 11:  # 模拟模式
+            if args[9] != args[10]:
                 self.money += 1
             else:
                 self.money -= 1
@@ -188,8 +189,8 @@ class CaiPiaoApi:
 
     def patter13(self, *args):  # 正买
         self.times += 1
-        if len(args) >= 7:  # 模拟模式
-            if args[5] == args[6]:
+        if len(args) >= 11:  # 模拟模式
+            if args[9] == args[10]:
                 self.money += 1
             else:
                 self.money -= 1
@@ -202,8 +203,16 @@ class CaiPiaoApi:
             if index < len(rawlist) - 2:
                 if item == rawlist[index + 1]:
                     eqcount += 1
+        print(rawlist, eqcount)
         return eqcount
 
+    def judge_list_real(self, rawlist):
+        eqcount = 0
+        for index, item in enumerate(rawlist):
+            if index < len(rawlist) - 1:
+                if item == rawlist[index + 1]:
+                    eqcount += 1
+        return eqcount
 
     def calculate_times(self, rawlist):
         single = 0
@@ -340,8 +349,9 @@ class CaiPiaoApi:
 # token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
 # Host: 6970a.com
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
-CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
+#CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 # CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
 # token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
 # md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
+#KEEq%2Bszl9swlfKh5LZXsdd2qiZ79cn953UjJaf4OgZpD%2FlPaDNYkWOSmtLoSYQdTSsS8Hg%3D%3D; account=test085444
