@@ -22,6 +22,8 @@ class CaiPiaoApi:
     times = 0
     tmplist = []
 
+    sepcount = 12
+
     winnum = 0
 
     def __init__(self, token):
@@ -34,7 +36,7 @@ class CaiPiaoApi:
         lenlist = []
         luzhiurl = "https://6970a.com/v/lottery/luzhi?gameId=45"
         res = requests.get(luzhiurl).json()[3]['luzhi']
-        print(res)
+        print(requests.get(luzhiurl).json()[3])
         for item in res:
             tmplist = item.split(',')
             lenlist.append(len(tmplist))
@@ -54,38 +56,17 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        self.moni2(rawlist=res['newlist'])
+        #self.moni4(rawlist=res['newlist'])
+        # self.moni3(rawlist=res['newlist'])
+
         # self.genmai(rawlist=res['newlist'])
         # self.auto_reverse(rawlist=res['newlist'])
 
-        return self.judge2(rawlist=res['newlist'])
+        # return self.judge2(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
 
-    def moni(self, rawlist):  # 方案1
-
-        realbet = 0
-        betmoney = 100
-
-        posi_counter = 0
-        nege_counter = 0  # 跟买2把 反买一把
-
-        reverse_num = 0
-        for index, current in enumerate(rawlist):
-            final = 20
-
-            # len(rawlist) - final -1
-
-            if index <= len(rawlist) - 7:
-                next1 = rawlist[index + 1]
-                next2 = rawlist[index + 2]
-                next3 = rawlist[index + 3]
-                next4 = rawlist[index + 4]
-                next5 = rawlist[index + 5]
-                next6 = rawlist[index + 6]
-
-        print({"money": self.money, "times": self.times})
 
     def moni2(self, rawlist):
         newlist = []
@@ -108,9 +89,11 @@ class CaiPiaoApi:
 
                 eqcount = self.judge_list(arg1)
 
+                self.zhengmai(*arg2)
+
                 # self.patter12(*arg1)
 
-                self.shang5(*arg2)
+                # self.shang5(*arg2)
 
                 # self.patter12(*arg1)
 
@@ -135,6 +118,18 @@ class CaiPiaoApi:
         file.write(
             "\n ----- \n" + str(Counter(newlist)) + '\n ---------------- \n' + str(
                 {"money": self.money, "times": self.times}) + '\n ---------------- \n')
+        print({"money": self.money, "times": self.times})
+
+    def moni3(self, rawlist):
+        newlist = []
+        num = self.sepcount # 定义每组包含的元素个数
+        for i in range(0, len(rawlist), num):
+            newlist.append(rawlist[i:i + num])
+        newlist = newlist[0:-1]
+        print(newlist)
+        for i  in newlist:
+            self.sixandsix(*tuple(i))
+        print(len(newlist))
         print({"money": self.money, "times": self.times})
 
     def genmai(self,rawlist):  # 跟买n把 反转一把  继续跟买
@@ -247,6 +242,78 @@ class CaiPiaoApi:
         if eqcount > 5:
             return self.patter12(*arg1)
 
+
+    def sixandsix(self,*args):
+        # 12个数据 每12个作为一次预测！
+        arg1 = args[0:int(self.sepcount/2)]
+        arg2 = args[int(self.sepcount/2):]
+        eqcountprev = self.judge_list(arg1)
+
+
+
+        eqcountnext = self.judge_list(arg2)
+
+        # print(eqcountnext,eqcountprev)
+
+        if eqcountprev > self.sepcount-1:
+            # 如果前面6把正买比较多  直接正买在未来6把
+            self.money += eqcountnext - (int(self.sepcount/2) -1 - eqcountnext)
+        else:
+            self.money += int(self.sepcount/2)- 1 - eqcountnext - eqcountnext
+
+
+    def moni4(self,rawlist):
+        # 12个数据 每12个作为一次预测！
+
+        newlist = []
+        num = 6 # 定义每组包含的元素个数
+        for i in range(0, len(rawlist), num):
+            newlist.append(rawlist[i:i + num])
+        newlist = newlist[0:-1]
+
+        for index,item in enumerate(newlist):
+            if index < len(newlist) -1:
+                arg1 = tuple(item)
+                arg2 = tuple(newlist[index+1])
+
+                eqcountprev = self.judge_list(arg1)
+
+                eqcountnext = self.judge_list(arg2)
+
+                # print(eqcountnext,eqcountprev)
+
+                if eqcountprev > 4:
+                    # 如果前面6把正买比较多  直接正买在未来6把
+                    self.money += eqcountnext - (5 - eqcountnext)
+                else:
+                    self.money += 5 - eqcountnext - eqcountnext
+        print({"money": self.money, "times": self.times})
+
+
+
+
+
+    def zhengmai(self,*args):
+
+        self.press_money = 1
+        if len(args) >= 4:  # 模拟模式
+            if args[0] != args[1] :
+
+                if args[1] == args[2]:
+                    self.times += 1
+                    self.money += self.press_money
+                    self.press_money = 1
+                else:
+                    self.money -= self.press_money
+                    self.press_money = 2
+            # elif args[0] == args[1]:
+            #     if args[1] != args[2]:
+            #         self.money += 1
+            #     else:
+            #         self.money -= 1
+        else:  # 投注模式
+            return {"bet": True, "direction": False}
+
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
 
@@ -272,8 +339,8 @@ class CaiPiaoApi:
 
     def judge_list(self, rawlist):
         eqcount = 0
-        for index, item in enumerate(rawlist):
-            if index < len(rawlist) - 2:
+        for index, item in enumerate(list(rawlist)):
+            if index < len(rawlist) - 1:
                 if item == rawlist[index + 1]:
                     eqcount += 1
         # print(rawlist, eqcount)
@@ -343,17 +410,20 @@ class CaiPiaoApi:
         if chajia < 0:
             self.winnum -= 1
             alllog += "累积盈利：%s把" % (self.winnum)
-        if not betinfo['bet']:
-            return [self.yuer, turn, "不押注", alllog, self.price]
-        else:
-            if betinfo['direction']:
-                self.bet(turn, self.price, mode)
-            elif mode == "单":
-                mode = "双"
-                self.bet(turn, self.price, mode)
-            else:
-                mode = "单"
-                self.bet(turn, self.price, mode)
+
+        self.bet(turn, self.price, "单")
+
+        # if not betinfo['bet']:
+        #     return [self.yuer, turn, "不押注", alllog, self.price]
+        # else:
+        #     if betinfo['direction']:
+        #         self.bet(turn, self.price, mode)
+        #     elif mode == "单":
+        #         mode = "双"
+        #         self.bet(turn, self.price, mode)
+        #     else:
+        #         mode = "单"
+        #         self.bet(turn, self.price, mode)
 
         return [self.yuer, turn, mode, alllog, self.price]
 
