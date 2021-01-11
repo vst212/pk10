@@ -22,6 +22,8 @@ class CaiPiaoApi:
     times = 0
     tmplist = []
 
+    winnum = 0
+
     def __init__(self, token):
         self.token = token
 
@@ -41,6 +43,9 @@ class CaiPiaoApi:
         count = Counter(lenlist[::-1])
         sec = newlist
         count2 = Counter(sec)
+        print(count2)
+        print(Counter(lenlist))
+        print(Counter(res))
         # print(newlist[50:60])
         count190 = Counter(sec[0:199])
         # print(count190.get('单'))
@@ -50,6 +55,8 @@ class CaiPiaoApi:
                 "lenlist": lenlist[::-1], "newlist": sec}
 
         self.moni2(rawlist=res['newlist'])
+        # self.genmai(rawlist=res['newlist'])
+        # self.auto_reverse(rawlist=res['newlist'])
 
         return self.judge2(rawlist=res['newlist'])
 
@@ -96,21 +103,25 @@ class CaiPiaoApi:
                 next10 = rawlist[index + 10]
 
                 arg1 = (current, next1, next2, next3, next4, next5, next6, next7, next8, next9, next10)
+                arg2 = (current, next1, next2, next3, next4, next5)
                 newlist.append(arg1)
 
                 eqcount = self.judge_list(arg1)
 
                 # self.patter12(*arg1)
 
-                if eqcount < 5:
-                    # 反买
-                    self.patter13(*arg1)
+                self.shang5(*arg2)
 
-                if eqcount == 5:
-                    self.patter12(*arg1)
+                # self.patter12(*arg1)
 
-                if eqcount > 5:
-                    self.patter13(*arg1)
+                # rvcount = 7
+                #
+                # if eqcount <= rvcount:
+                #     # 正买
+                #     self.patter13(*arg1)
+                #
+                # if eqcount > rvcount:
+                #     self.patter12(*arg1)
 
         #
         # print(self.tmplist)
@@ -125,6 +136,70 @@ class CaiPiaoApi:
             "\n ----- \n" + str(Counter(newlist)) + '\n ---------------- \n' + str(
                 {"money": self.money, "times": self.times}) + '\n ---------------- \n')
         print({"money": self.money, "times": self.times})
+
+    def genmai(self,rawlist):  # 跟买n把 反转一把  继续跟买
+        rvcount = 5
+        for index, item in enumerate(rawlist):
+            if index < len(rawlist) - 1:
+                if (index % rvcount ) != 0:
+                    if item == rawlist[index + 1]:
+                        self.money +=1
+                    else:
+                        self.money -=1
+                else:
+                    if item != rawlist[index + 1]:
+                        self.money +=1
+                    else:
+                        self.money -=1
+        print("money:",self.money)
+
+    def auto_reverse(self,rawlist):  # 自动反转  买对了跟买 买错了反买
+        fanmai = False
+        losecount  = 0
+        rvcount = 1
+        for index, item in enumerate(rawlist):
+            if index < len(rawlist) - 1:
+                if not fanmai:
+                    if item == rawlist[index + 1]:
+                        self.money +=1
+                        losecount -=1
+                    else:
+                        self.money -=1
+                        losecount +=1
+                        if losecount > rvcount:
+                            fanmai = True
+                else:
+                    if item != rawlist[index + 1]:
+                        self.money +=1
+                        losecount -=1
+                    else:
+                        self.money -=1
+                        losecount +=1
+                        if losecount > rvcount:
+                            fanmai = False
+        print("money:",self.money)
+
+
+    def shang5(self,*args):
+        self.times += 1
+
+        # count = Counter(args[0:-1]).get("单") - Counter(args[0:-1]).get("双")
+        # print( count)
+        if len(args) >= 6:  # 模拟模式
+            if Counter(args[0:-1]).get("单") and Counter(args[0:-1]).get("单") >= 0:
+                if args[5] == "单":
+                    self.money +=1
+                else:
+                    self.money -=1
+            elif Counter(args[0:-1]).get("双") and Counter(args[0:-1]).get("双") >=100:
+                if args[5] == "双":
+                    self.money +=1
+                else:
+                    self.money -=1
+        else:  # 投注模式
+            return {"bet": True, "direction": False}
+
+
 
     # 根据短期的开奖记录切换方案
 
@@ -165,15 +240,12 @@ class CaiPiaoApi:
 
         print("Eqcount", eqcount)
 
-        if eqcount < 5:
+        if eqcount <= 5:
             # 反买
             return self.patter13(*arg1)
 
-        if eqcount == 5:
-            return self.patter12(*arg1)
-
         if eqcount > 5:
-            return self.patter13(*arg1)
+            return self.patter12(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
@@ -188,6 +260,7 @@ class CaiPiaoApi:
             return {"bet": True, "direction": False}
 
     def patter13(self, *args):  # 正买
+        """正买"""
         self.times += 1
         if len(args) >= 11:  # 模拟模式
             if args[9] == args[10]:
@@ -203,7 +276,7 @@ class CaiPiaoApi:
             if index < len(rawlist) - 2:
                 if item == rawlist[index + 1]:
                     eqcount += 1
-        print(rawlist, eqcount)
+        # print(rawlist, eqcount)
         return eqcount
 
     def judge_list_real(self, rawlist):
@@ -257,11 +330,19 @@ class CaiPiaoApi:
         newyuer = self.getyuer()
         chajia = int(newyuer) - int(self.yuer)
         self.yuer = newyuer
+
         turn = self.getturn()
         kaijiang = self.kaijiang()
         betinfo = kaijiang[0]
         mode = kaijiang[1]
         alllog = kaijiang[2]
+
+        if chajia > 0:
+            self.winnum += 1
+            alllog += "累积盈利：%s把"%(self.winnum)
+        if chajia < 0:
+            self.winnum -= 1
+            alllog += "累积盈利：%s把" % (self.winnum)
         if not betinfo['bet']:
             return [self.yuer, turn, "不押注", alllog, self.price]
         else:
@@ -349,7 +430,7 @@ class CaiPiaoApi:
 # token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
 # Host: 6970a.com
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
-#CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
+CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 # CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
 # token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
