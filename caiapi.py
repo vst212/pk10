@@ -535,3 +535,5 @@ def play_a_round(win_time_to_stop, pocket, pay, n):
 #     mymoney += play_a_round(5,2000,200,2)[0]
 #
 # print(mymoney)
+
+##token=AN1XWoTSYHUYzVnQwIETpDFv6WmhS3cMb2Kj1cnd5zsnUT%2FYSdfIYBQzJGJ2r245GM%2BkZQ%3D%3D; account=test061820; accountType=TEST
