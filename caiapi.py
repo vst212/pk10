@@ -25,6 +25,7 @@ class CaiPiaoApi:
     sepcount = 12
 
     winnum = 0
+    press_count =0
 
     def __init__(self, token):
         self.token = token
@@ -56,17 +57,18 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        #self.moni4(rawlist=res['newlist'])
+        # self.moni4(rawlist=res['newlist'])
         # self.moni3(rawlist=res['newlist'])
+
+        self.moni2(rawlist=res['newlist'])
 
         # self.genmai(rawlist=res['newlist'])
         # self.auto_reverse(rawlist=res['newlist'])
 
-        # return self.judge2(rawlist=res['newlist'])
+        return self.judge2(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
-
 
     def moni2(self, rawlist):
         newlist = []
@@ -83,28 +85,28 @@ class CaiPiaoApi:
                 next9 = rawlist[index + 9]
                 next10 = rawlist[index + 10]
 
-                arg1 = (current, next1, next2, next3, next4, next5, next6, next7, next8, next9, next10)
+                arg0 = (current, next1, next2, next3, next4, next5, next6, next7, next8, next9, next10)
+                arg1 = (current, next1, next2, next3, next4, next5, next6, next7)
                 arg2 = (current, next1, next2, next3, next4, next5)
                 newlist.append(arg1)
 
                 eqcount = self.judge_list(arg1)
 
-                self.zhengmai(*arg2)
+                # self.zhengmai(*arg2)
 
                 # self.patter12(*arg1)
 
                 # self.shang5(*arg2)
 
-                # self.patter12(*arg1)
+                rvcount = 2  # 反转为5并不稳定
+                #
+                if eqcount <= rvcount:
+                    # 反买
+                    self.patter12(*arg1)
 
-                # rvcount = 7
-                #
-                # if eqcount <= rvcount:
-                #     # 正买
-                #     self.patter13(*arg1)
-                #
-                # if eqcount > rvcount:
-                #     self.patter12(*arg1)
+                if eqcount > rvcount:
+                    # 正买
+                    self.patter13(*arg1)
 
         #
         # print(self.tmplist)
@@ -122,60 +124,59 @@ class CaiPiaoApi:
 
     def moni3(self, rawlist):
         newlist = []
-        num = self.sepcount # 定义每组包含的元素个数
+        num = self.sepcount  # 定义每组包含的元素个数
         for i in range(0, len(rawlist), num):
             newlist.append(rawlist[i:i + num])
         newlist = newlist[0:-1]
         print(newlist)
-        for i  in newlist:
+        for i in newlist:
             self.sixandsix(*tuple(i))
         print(len(newlist))
         print({"money": self.money, "times": self.times})
 
-    def genmai(self,rawlist):  # 跟买n把 反转一把  继续跟买
+    def genmai(self, rawlist):  # 跟买n把 反转一把  继续跟买
         rvcount = 5
         for index, item in enumerate(rawlist):
             if index < len(rawlist) - 1:
-                if (index % rvcount ) != 0:
+                if (index % rvcount) != 0:
                     if item == rawlist[index + 1]:
-                        self.money +=1
+                        self.money += 1
                     else:
-                        self.money -=1
+                        self.money -= 1
                 else:
                     if item != rawlist[index + 1]:
-                        self.money +=1
+                        self.money += 1
                     else:
-                        self.money -=1
-        print("money:",self.money)
+                        self.money -= 1
+        print("money:", self.money)
 
-    def auto_reverse(self,rawlist):  # 自动反转  买对了跟买 买错了反买
+    def auto_reverse(self, rawlist):  # 自动反转  买对了跟买 买错了反买
         fanmai = False
-        losecount  = 0
+        losecount = 0
         rvcount = 1
         for index, item in enumerate(rawlist):
             if index < len(rawlist) - 1:
                 if not fanmai:
                     if item == rawlist[index + 1]:
-                        self.money +=1
-                        losecount -=1
+                        self.money += 1
+                        losecount -= 1
                     else:
-                        self.money -=1
-                        losecount +=1
+                        self.money -= 1
+                        losecount += 1
                         if losecount > rvcount:
                             fanmai = True
                 else:
                     if item != rawlist[index + 1]:
-                        self.money +=1
-                        losecount -=1
+                        self.money += 1
+                        losecount -= 1
                     else:
-                        self.money -=1
-                        losecount +=1
+                        self.money -= 1
+                        losecount += 1
                         if losecount > rvcount:
                             fanmai = False
-        print("money:",self.money)
+        print("money:", self.money)
 
-
-    def shang5(self,*args):
+    def shang5(self, *args):
         self.times += 1
 
         # count = Counter(args[0:-1]).get("单") - Counter(args[0:-1]).get("双")
@@ -183,18 +184,16 @@ class CaiPiaoApi:
         if len(args) >= 6:  # 模拟模式
             if Counter(args[0:-1]).get("单") and Counter(args[0:-1]).get("单") >= 0:
                 if args[5] == "单":
-                    self.money +=1
+                    self.money += 1
                 else:
-                    self.money -=1
-            elif Counter(args[0:-1]).get("双") and Counter(args[0:-1]).get("双") >=100:
+                    self.money -= 1
+            elif Counter(args[0:-1]).get("双") and Counter(args[0:-1]).get("双") >= 100:
                 if args[5] == "双":
-                    self.money +=1
+                    self.money += 1
                 else:
-                    self.money -=1
+                    self.money -= 1
         else:  # 投注模式
             return {"bet": True, "direction": False}
-
-
 
     # 根据短期的开奖记录切换方案
 
@@ -229,52 +228,51 @@ class CaiPiaoApi:
         next3 = rawlist[-2]
         next4 = rawlist[-1]
 
-        arg1 = (t, n, e, s, zero, current, next1, next2, next3, next4,)
+        arg1 = (t, n, e, s, zero, current, next1,)
 
-        eqcount = self.judge_list_real(arg1)
+        eqcount = self.judge_list(arg1)
 
         print("Eqcount", eqcount)
 
-        if eqcount <= 5:
+        rvcount = 2  # 反转为5并不稳定
+        #
+        if eqcount <= rvcount:
             # 反买
-            return self.patter13(*arg1)
-
-        if eqcount > 5:
             return self.patter12(*arg1)
 
+        if eqcount > rvcount:
+            # 正买
+            return self.patter13(*arg1)
 
-    def sixandsix(self,*args):
+    def sixandsix(self, *args):
         # 12个数据 每12个作为一次预测！
-        arg1 = args[0:int(self.sepcount/2)]
-        arg2 = args[int(self.sepcount/2):]
+        arg1 = args[0:int(self.sepcount / 2)]
+        arg2 = args[int(self.sepcount / 2):]
         eqcountprev = self.judge_list(arg1)
-
-
 
         eqcountnext = self.judge_list(arg2)
 
         # print(eqcountnext,eqcountprev)
 
-        if eqcountprev > self.sepcount-1:
+        if eqcountprev > self.sepcount - 1:
             # 如果前面6把正买比较多  直接正买在未来6把
-            self.money += eqcountnext - (int(self.sepcount/2) -1 - eqcountnext)
+            self.money += eqcountnext - (int(self.sepcount / 2) - 1 - eqcountnext)
         else:
-            self.money += int(self.sepcount/2)- 1 - eqcountnext - eqcountnext
+            self.money += int(self.sepcount / 2) - 1 - eqcountnext - eqcountnext
 
-
-    def moni4(self,rawlist):
+    def moni4(self, rawlist):
         # 12个数据 每12个作为一次预测！
 
         newlist = []
-        num = 6 # 定义每组包含的元素个数
+        num = 6  # 定义每组包含的元素个数
         for i in range(0, len(rawlist), num):
             newlist.append(rawlist[i:i + num])
         newlist = newlist[0:-1]
 
-        for index,item in enumerate(newlist):
-            if index < len(newlist) -1:
+        for index, item in enumerate(newlist):
+            if index < len(newlist) - 1:
                 arg1 = tuple(item)
-                arg2 = tuple(newlist[index+1])
+                arg2 = tuple(newlist[index + 1])
 
                 eqcountprev = self.judge_list(arg1)
 
@@ -289,15 +287,11 @@ class CaiPiaoApi:
                     self.money += 5 - eqcountnext - eqcountnext
         print({"money": self.money, "times": self.times})
 
-
-
-
-
-    def zhengmai(self,*args):
+    def zhengmai(self, *args):
 
         self.press_money = 1
         if len(args) >= 4:  # 模拟模式
-            if args[0] != args[1] :
+            if args[0] != args[1]:
 
                 if args[1] == args[2]:
                     self.times += 1
@@ -318,8 +312,8 @@ class CaiPiaoApi:
         # 对近5把进行判断
 
         self.times += 1
-        if len(args) >= 11:  # 模拟模式
-            if args[9] != args[10]:
+        if len(args) >= 8:  # 模拟模式
+            if args[7] != args[6]:
                 self.money += 1
             else:
                 self.money -= 1
@@ -329,8 +323,8 @@ class CaiPiaoApi:
     def patter13(self, *args):  # 正买
         """正买"""
         self.times += 1
-        if len(args) >= 11:  # 模拟模式
-            if args[9] == args[10]:
+        if len(args) >= 8:  # 模拟模式
+            if args[6] == args[7]:
                 self.money += 1
             else:
                 self.money -= 1
@@ -340,7 +334,7 @@ class CaiPiaoApi:
     def judge_list(self, rawlist):
         eqcount = 0
         for index, item in enumerate(list(rawlist)):
-            if index < len(rawlist) - 1:
+            if index < len(rawlist) - 2:
                 if item == rawlist[index + 1]:
                     eqcount += 1
         # print(rawlist, eqcount)
@@ -368,31 +362,6 @@ class CaiPiaoApi:
     def get_percent(self, rawlist):
         return 6
 
-    def judge(self, rawlist):
-        prev4 = rawlist[3]
-        prev3 = rawlist[2]
-        prev2 = rawlist[1]
-        prev1 = rawlist[0]
-
-        if prev3 != prev2 and prev2 == prev1:  ## 正向投 胜率最稳定预测
-            return {"bet": True, "direction": True}
-
-        if prev3 == prev2 and prev2 != prev1:  ## 正向投 胜率最稳定预测
-            return {"bet": True, "direction": True}
-
-        # if prev3 != prev2 and prev2 != prev1:  ## 连续反向的 跟反向
-        #     return {"bet": True, "direction": False}
-
-        # if prev4 != prev3 and prev3 == prev2 and prev2 == prev1:  ## 正向投
-        #     return {"bet": True, "direction": True}
-        #
-        # if prev4 == prev3 and prev3 != prev2 and prev2 != prev1:  ## 反向投
-        #     return {"bet": True, "direction": False}
-
-        # 连续3吧正确 第四把继续 稳定的打法
-
-        return {"bet": False, "direction": True}
-
     def touzhu(self):
         newyuer = self.getyuer()
         chajia = int(newyuer) - int(self.yuer)
@@ -404,26 +373,27 @@ class CaiPiaoApi:
         mode = kaijiang[1]
         alllog = kaijiang[2]
 
+        self.press_count +=1
+
+
         if chajia > 0:
             self.winnum += 1
-            alllog += "累积盈利：%s把"%(self.winnum)
+            alllog += "累积盈利：%s把,累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
         if chajia < 0:
             self.winnum -= 1
-            alllog += "累积盈利：%s把" % (self.winnum)
+            alllog += "累积盈利：%s把，累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
 
-        self.bet(turn, self.price, "单")
-
-        # if not betinfo['bet']:
-        #     return [self.yuer, turn, "不押注", alllog, self.price]
-        # else:
-        #     if betinfo['direction']:
-        #         self.bet(turn, self.price, mode)
-        #     elif mode == "单":
-        #         mode = "双"
-        #         self.bet(turn, self.price, mode)
-        #     else:
-        #         mode = "单"
-        #         self.bet(turn, self.price, mode)
+        if not betinfo['bet']:
+            return [self.yuer, turn, "不押注", alllog, self.price]
+        else:
+            if betinfo['direction']:
+                self.bet(turn, self.price, mode)
+            elif mode == "单":
+                mode = "双"
+                self.bet(turn, self.price, mode)
+            else:
+                mode = "单"
+                self.bet(turn, self.price, mode)
 
         return [self.yuer, turn, mode, alllog, self.price]
 
@@ -505,4 +475,4 @@ CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2
 # CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
 # token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
 # md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
-#KEEq%2Bszl9swlfKh5LZXsdd2qiZ79cn953UjJaf4OgZpD%2FlPaDNYkWOSmtLoSYQdTSsS8Hg%3D%3D; account=test085444
+# KEEq%2Bszl9swlfKh5LZXsdd2qiZ79cn953UjJaf4OgZpD%2FlPaDNYkWOSmtLoSYQdTSsS8Hg%3D%3D; account=test085444
