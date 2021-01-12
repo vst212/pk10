@@ -14,6 +14,9 @@ class CaiPiaoApi:
     alllog = ""
     token = "SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D"
     # token =''
+    baseprice = 100
+
+    stopcount = 4
     price = 100
     yuer = 0
 
@@ -61,7 +64,7 @@ class CaiPiaoApi:
         # self.moni4(rawlist=res['newlist'])
         # self.moni3(rawlist=res['newlist'])
 
-        self.moni2(rawlist=res['newlist'])
+        # self.moni2(rawlist=res['newlist'])
 
         # self.genmai(rawlist=res['newlist'])
         # self.auto_reverse(rawlist=res['newlist'])
@@ -99,7 +102,7 @@ class CaiPiaoApi:
 
                 # self.shang5(*arg2)
 
-                rvcount = 2  # 反转为5并不稳定
+                rvcount = 2 # 反转为5并不稳定
                 #
                 if eqcount <= rvcount:
                     # 反买
@@ -315,9 +318,17 @@ class CaiPiaoApi:
         self.times += 1
         if len(args) >= 8:  # 模拟模式
             if args[7] != args[6]:
-                self.money += 1
+                self.winnum +=1
+                self.price = self.baseprice * (2 ** (self.winnum - 1))
+                self.money += self.price
+                if self.winnum == 4:
+                    self.winnum =0
+                    self.price =self.baseprice
             else:
-                self.money -= 1
+                self.winnum = 0
+                self.money -= self.baseprice
+                self.price = self.baseprice
+                # print("亏损100")
         else:  # 投注模式
             return {"bet": True, "direction": False}
 
@@ -326,9 +337,17 @@ class CaiPiaoApi:
         self.times += 1
         if len(args) >= 8:  # 模拟模式
             if args[6] == args[7]:
-                self.money += 1
+                self.winnum += 1
+                self.price = self.baseprice * (2 ** (self.winnum -1))
+                self.money += self.price
+                if self.winnum == 4:
+                    self.winnum =0
+                    self.price = self.baseprice
             else:
-                self.money -= 1
+                self.winnum = 0
+                self.money -= self.baseprice
+                self.price = self.baseprice
+                # print("亏损100")
         else:  # 投注模式
             return {"bet": True, "direction": True}
 
@@ -377,11 +396,16 @@ class CaiPiaoApi:
         self.press_count +=1
 
 
-        if chajia > 0:
+        if chajia > 0: # 这里修改价格 4轮为单位 单价为100 输光要20把
             self.winnum += 1
+            self.price = self.baseprice * (2 ** (self.winnum - 1))
+            if self.winnum == 4:
+                self.winnum = 0
+                self.price = self.baseprice
             alllog += "累积盈利：%s把,累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
         if chajia < 0:
-            self.winnum -= 1
+            self.winnum = 0
+            self.price = self.baseprice
             alllog += "累积盈利：%s把，累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
 
         if not betinfo['bet']:
@@ -471,7 +495,7 @@ class CaiPiaoApi:
 # token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
 # Host: 6970a.com
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
-# CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
+CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 # CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
 # token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
@@ -506,8 +530,8 @@ def play_a_round(win_time_to_stop, pocket, pay, n):
     # print(pocket, pay)
     return pocket - money_when_start, pocket > money_when_start
 
-mymoney = 0
-for i in range(20000):
-    mymoney += play_a_round(5,2000,200,2)[0]
-
-print(mymoney)
+# mymoney = 0
+# for i in range(20000):
+#     mymoney += play_a_round(5,2000,200,2)[0]
+#
+# print(mymoney)

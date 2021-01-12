@@ -78,7 +78,7 @@ class Ui_MainWindow(object):
 
     def saveprice(self):
         price= self.lineEdit_2.text()
-        CaiPiaoApi.price = int(price)
+        CaiPiaoApi.baseprice = int(price)
         self.label_4.setText(str(CaiPiaoApi.price))
 
     def login(self):
@@ -88,6 +88,7 @@ class Ui_MainWindow(object):
         file.write('----路子----')
         self.cp = CaiPiaoApi(token=self.lineEdit.text())
         yuer = self.cp.getyuer()
+        self.cp.yuer = yuer
         self.label_2.setText(str(yuer))
 
     def starttozhu(self):
