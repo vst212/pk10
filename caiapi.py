@@ -4,6 +4,7 @@ import json
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
+from past.builtins import xrange
 
 import readJSON
 from collections import Counter
@@ -470,9 +471,43 @@ class CaiPiaoApi:
 # token=SpcQqiL%2FHt8ewpBISnsuDb2feV45t8pqGM%2BdluGs6eFb6YRVMqi8Cl20cN8RqsTYZ62dhQ%3D%3D; account=test403474; accountType=TEST
 # Host: 6970a.com
 # token=XdW%2Bm%2B%2FH%2FASJNS02Ngo5aO0qyubMKUspZRL9XKvbNYG8nEXxSCFf%2BFVaMXQe4auNpwbNJQ%3D%3D; account=test146018
-CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
+# CaiPiaoApi(token="SpIcyupj1luxw4jSkD2FBe25kLxRK2uaK0RD83C5wmLN6WRles3AOoWWeWaQ%2BBl3%2FX4uAA%3D%3D").getluzhi()
 # Rrwl4ZBMfkeWhj7cISeKmI0aAIa8M%2F%2B%2B%2B5Kp4anBF8fggxM1UuNsFAH9oVlq98dM35seZw%3D%3D; account=test540560
 # CaiPiaoApi(token="B4NTh6NR99HrT0DULm4k%2F%2FrMWVUQdOPVmbneGREnXOx%2FgwRLkGVSZduulSQXWjk5ZBpvWg%3D%3D").touzhu()
 # token=UCEOiZvl25Hb4qB7cyudUpwqOLw0ESqFAT67xrk%2F7y3ThdjZC0F49aIWJxqugFre7JYh5A%3D%3D; account=test127771; accountType=TEST
 # md5Password=true; JSESSIONID=E45BB51D49CF5F51C6905E9632AA2299; token=jLOGhnQW%2F7vt87uZzQNzRz0oZ0%2F8uYpQvvXRNllh6t2pEVvt9gb%2BtzPBUwzmLFDKwkmPBA%3D%3D; account=test218477; accountType=TEST
 # KEEq%2Bszl9swlfKh5LZXsdd2qiZ79cn953UjJaf4OgZpD%2FlPaDNYkWOSmtLoSYQdTSsS8Hg%3D%3D; account=test085444
+
+
+import random
+
+WIN  = 1
+LOSE = 0
+
+def gambling_50_percent(pocket, pay):
+    result = random.randint(0, 1)
+    if result == WIN:
+        pocket += pay
+    else:
+        pocket -= pay
+    return result, pocket
+
+def play_a_round(win_time_to_stop, pocket, pay, n):
+    money_when_start = pocket
+    root_pay = pay
+
+    for i in xrange(win_time_to_stop):
+        win_or_lose, pocket = gambling_50_percent(pocket, pay)
+        if win_or_lose == WIN:
+            pay *= n
+        else:
+            pay = root_pay
+            break
+    # print(pocket, pay)
+    return pocket - money_when_start, pocket > money_when_start
+
+mymoney = 0
+for i in range(20000):
+    mymoney += play_a_round(5,2000,200,2)[0]
+
+print(mymoney)
