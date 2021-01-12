@@ -221,9 +221,7 @@ class CaiPiaoApi:
         return y
 
     def judge2(self, rawlist):
-        t = rawlist[-10]
-        n = rawlist[-9]
-        e = rawlist[-8]
+
         s = rawlist[-7]
         zero = rawlist[-6]
         current = rawlist[-5]
@@ -232,7 +230,7 @@ class CaiPiaoApi:
         next3 = rawlist[-2]
         next4 = rawlist[-1]
 
-        arg1 = (t, n, e, s, zero, current, next1,)
+        arg1 = ( s, zero, current, next1,next2,next3,next4)
 
         eqcount = self.judge_list(arg1)
 
@@ -398,15 +396,17 @@ class CaiPiaoApi:
 
         if chajia > 0: # 这里修改价格 4轮为单位 单价为100 输光要20把
             self.winnum += 1
-            self.price = self.baseprice * (2 ** (self.winnum - 1))
+            self.price = self.baseprice * (2 ** (self.winnum))
             if self.winnum == 4:
                 self.winnum = 0
                 self.price = self.baseprice
+            print("投注价格翻倍",self.price)
             alllog += "累积盈利：%s把,累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
         if chajia < 0:
             self.winnum = 0
             self.price = self.baseprice
             alllog += "累积盈利：%s把，累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
+            print("投注价格不变", self.price)
 
         if not betinfo['bet']:
             return [self.yuer, turn, "不押注", alllog, self.price]
@@ -429,7 +429,7 @@ class CaiPiaoApi:
     def kaijiang(self):  # 开奖结果
         url = "https://6970a.com/js/anls-api/data/jssc60/numTrend/100.do"
         res = requests.get(url).json()['bodyList'][0:2]
-        print("开奖：", res)
+        # print("开奖：", res)
         mylog = ""
         for index, openinfo in enumerate(res):
             if index == 0:
