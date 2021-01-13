@@ -26,6 +26,9 @@ class CaiPiaoApi:
     times = 0
     tmplist = []
 
+    maxlose =0
+    lose = 0
+
     sepcount = 12
 
     winnum = 0
@@ -61,9 +64,9 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        self.moni2(rawlist=res['newlist'])
+        # self.moni2(rawlist=res['newlist'])
 
-        # return self.judge2(rawlist=res['newlist'])
+        return self.judge2(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
@@ -90,7 +93,7 @@ class CaiPiaoApi:
 
                 eqcount = self.judge_list(arg1)
 
-                rvcount = 2 # 反转为5并不稳定
+                rvcount = 4 # 反转为5并不稳定
                 #
                 if eqcount <= rvcount:
                     # 反买
@@ -145,14 +148,16 @@ class CaiPiaoApi:
 
         print("Eqcount", eqcount)
 
-        rvcount = 2  # 反转为5并不稳定
+        rvcount = 4  # 反转为5并不稳定
         #
         if eqcount <= rvcount:
             # 反买
+            print("反买")
             return self.patter12(*arg1)
 
         if eqcount > rvcount:
             # 正买
+            print("正买")
             return self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
@@ -164,7 +169,7 @@ class CaiPiaoApi:
                 self.winnum +=1
                 self.price = self.baseprice * (2 ** (self.winnum -1))
                 self.money += self.price
-                if self.winnum == 4:
+                if self.winnum == 5:
                     self.winnum =0
                 print("下一次投注", self.price,"余额：",self.money)
             else:
@@ -185,7 +190,7 @@ class CaiPiaoApi:
                 self.winnum += 1
                 self.price = self.baseprice * (2 ** (self.winnum - 1))
                 self.money += self.price
-                if self.winnum == 4:
+                if self.winnum == 5:
                     self.winnum =0
                 print("下一次投注", self.price,"余额：",self.money)
             else:
@@ -230,18 +235,18 @@ class CaiPiaoApi:
 
         if chajia > 0: # 这里修改价格 4轮为单位 单价为100 输光要20把
             self.winnum += 1
+            self.maxlose = max([self.maxlose,self.lose])
+            self.lose =0
             self.price = self.baseprice * (2 ** (self.winnum))
-            if self.winnum == 3:
+            if self.winnum == 5:
                 self.winnum = 0
-                self.baseprice = int(self.yuer / 20)
-                self.price = self.baseprice
             print("投注价格翻倍",self.price)
-            alllog += "累积盈利：%s把,累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
+            alllog += "累积盈利：%s把,累计耗时%s小时,最大损失%s把" % (self.winnum,round(self.press_count/60,2),self.maxlose)
         if chajia < 0:
+            self.lose += 1
             self.winnum = 0
-            self.baseprice = int(self.yuer / 20)
             self.price = self.baseprice
-            alllog += "累积盈利：%s把，累计耗时%s小时" % (self.winnum,round(self.press_count/60,2))
+            alllog += "累积盈利：%s把,累计耗时%s小时,最大损失%s把" % (self.winnum,round(self.press_count/60,2),self.maxlose)
             print("投注价格不变", self.price)
 
         if not betinfo['bet']:
@@ -373,3 +378,4 @@ def play_a_round(win_time_to_stop, pocket, pay, n):
 # print(mymoney)
 
 ##token=AN1XWoTSYHUYzVnQwIETpDFv6WmhS3cMb2Kj1cnd5zsnUT%2FYSdfIYBQzJGJ2r245GM%2BkZQ%3D%3D; account=test061820; accountType=TEST
+# md5Password=true; JSESSIONID=D087D7FBC2DBB9BDFB06D89611D385F9; token=qJwzynN2FQSyhipfZoPiKsIK8hebiFJM6zhrCyM5vBjew7AI2OcWiOT91fNLcB8BjAFs6A%3D%3D; account=test447577; accountType=TEST
