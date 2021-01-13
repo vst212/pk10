@@ -164,7 +164,7 @@ class CaiPiaoApi:
                 self.winnum +=1
                 self.price = self.baseprice * (2 ** (self.winnum -1))
                 self.money += self.price
-                if self.winnum == 3:
+                if self.winnum == 4:
                     self.winnum =0
                 print("下一次投注", self.price,"余额：",self.money)
             else:
@@ -185,7 +185,7 @@ class CaiPiaoApi:
                 self.winnum += 1
                 self.price = self.baseprice * (2 ** (self.winnum - 1))
                 self.money += self.price
-                if self.winnum == 3:
+                if self.winnum == 4:
                     self.winnum =0
                 print("下一次投注", self.price,"余额：",self.money)
             else:
