@@ -238,7 +238,7 @@ class CaiPiaoApi:
             self.maxlose = max([self.maxlose,self.lose])
             self.lose =0
             self.price = self.baseprice * (2 ** (self.winnum))
-            if self.winnum == 5:
+            if self.winnum == 4:
                 self.winnum = 0
             print("投注价格翻倍",self.price)
             alllog += "累积盈利：%s把,累计耗时%s小时,最大损失%s把" % (self.winnum,round(self.press_count/60,2),self.maxlose)
