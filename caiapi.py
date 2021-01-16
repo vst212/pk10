@@ -64,7 +64,7 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        # self.moni2(rawlist=res['newlist'])
+        #self.moni2(rawlist=res['newlist'])
 
         return self.judge2(rawlist=res['newlist'])
 
@@ -94,16 +94,18 @@ class CaiPiaoApi:
                 eqcount = self.judge_list(arg1)
 
                 rvcount = 4 # 反转为5并不稳定
+                # self.patter12(*arg1)
                 #
-                if eqcount <= rvcount:
-                    # 反买
-                    print("反买")
-                    self.patter12(*arg1)
-
-                if eqcount > rvcount:
-                    # 正买
-                    print("正买")
-                    self.patter13(*arg1)
+                self.patter13(*arg1)
+                # if eqcount <= rvcount:
+                #     # 反买
+                #     print("反买")
+                #     self.patter12(*arg1)
+                #
+                # if eqcount > rvcount:
+                #     # 正买
+                #     print("正买")
+                #     self.patter13(*arg1)
 
         file = open('luz99i.txt', 'a')
         file.write(
@@ -150,15 +152,15 @@ class CaiPiaoApi:
 
         rvcount = 4  # 反转为5并不稳定
         #
-        if eqcount <= rvcount:
-            # 反买
-            print("反买")
-            return self.patter12(*arg1)
-
-        if eqcount > rvcount:
-            # 正买
-            print("正买")
-            return self.patter13(*arg1)
+        # if eqcount <= rvcount:
+        #     # 反买
+        #     print("反买")
+        #     return self.patter12(*arg1)
+        #
+        # if eqcount > rvcount:
+        #     # 正买
+        #     print("正买")
+        return self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
@@ -188,7 +190,7 @@ class CaiPiaoApi:
         if len(args) >= 8:  # 模拟模式
             if args[6] == args[7]:
                 self.winnum += 1
-                self.price = self.baseprice * (2 ** (self.winnum - 1))
+                self.price = self.baseprice * (2 ** (self.winnum))
                 self.money += self.price
                 if self.winnum == 5:
                     self.winnum =0
@@ -232,6 +234,8 @@ class CaiPiaoApi:
         alllog = kaijiang[2]
 
         self.press_count +=1
+
+        self.price = self.baseprice
 
         if chajia > 0: # 这里修改价格 4轮为单位 单价为100 输光要20把
             self.winnum += 1

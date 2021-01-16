@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
     def saveprice(self):
         price= self.lineEdit_2.text()
         CaiPiaoApi.baseprice = int(price)
-        self.label_4.setText(str(CaiPiaoApi.price))
+        self.label_4.setText(str(CaiPiaoApi.baseprice))
 
     def login(self):
         file = open('./10pk.txt', 'w')
