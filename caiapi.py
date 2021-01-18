@@ -64,7 +64,7 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        #self.moni2(rawlist=res['newlist'])
+        # self.moni2(rawlist=res['newlist'])
 
         return self.judge2(rawlist=res['newlist'])
 
@@ -96,16 +96,16 @@ class CaiPiaoApi:
                 rvcount = 4 # 反转为5并不稳定
                 # self.patter12(*arg1)
                 #
-                self.patter13(*arg1)
-                # if eqcount <= rvcount:
-                #     # 反买
-                #     print("反买")
-                #     self.patter12(*arg1)
-                #
-                # if eqcount > rvcount:
-                #     # 正买
-                #     print("正买")
-                #     self.patter13(*arg1)
+                # self.patter13(*arg1)
+                if eqcount <= rvcount:
+                    # 反买
+                    print("反买")
+                    self.patter12(*arg1)
+
+                if eqcount > rvcount:
+                    # 正买
+                    print("正买")
+                    self.patter13(*arg1)
 
         file = open('luz99i.txt', 'a')
         file.write(
@@ -152,15 +152,15 @@ class CaiPiaoApi:
 
         rvcount = 4  # 反转为5并不稳定
         #
-        # if eqcount <= rvcount:
-        #     # 反买
-        #     print("反买")
-        #     return self.patter12(*arg1)
-        #
-        # if eqcount > rvcount:
-        #     # 正买
-        #     print("正买")
-        return self.patter13(*arg1)
+        if eqcount <= rvcount:
+            # 反买
+            print("反买")
+            return self.patter12(*arg1)
+
+        if eqcount > rvcount:
+            # 正买
+            print("正买")
+        # return self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
@@ -168,15 +168,20 @@ class CaiPiaoApi:
         self.times += 1
         if len(args) >= 8:  # 模拟模式
             if args[7] != args[6]:
-                self.winnum +=1
-                self.price = self.baseprice * (2 ** (self.winnum -1))
-                self.money += self.price
-                if self.winnum == 5:
+                if self.winnum == 4:
+                    self.price = self.baseprice * (2 ** (self.winnum ))
+                    self.money += self.price
                     self.winnum =0
-                print("下一次投注", self.price,"余额：",self.money)
+                else:
+                    self.price = self.baseprice * (2 ** (self.winnum ))
+                    self.money += self.price
+                    self.winnum +=1
+
+                print("本次投注", self.price,"余额：",self.money)
             else:
                 self.money -= self.baseprice * (2 ** (self.winnum ))
-                print("失败回到原点扣除", self.baseprice * (2 ** (self.winnum)),"剩余：",self.money)
+                # self.money -= self.price
+                print("失败回到原点扣除", self.baseprice * (2 ** (self.winnum )),"剩余：",self.money)
                 self.winnum = 0
                 self.price = self.baseprice
 
@@ -189,11 +194,15 @@ class CaiPiaoApi:
         self.times += 1
         if len(args) >= 8:  # 模拟模式
             if args[6] == args[7]:
-                self.winnum += 1
-                self.price = self.baseprice * (2 ** (self.winnum))
-                self.money += self.price
-                if self.winnum == 5:
-                    self.winnum =0
+                if self.winnum == 4:
+                    self.price = self.baseprice * (2 ** (self.winnum))
+                    self.money += self.price
+                    self.winnum = 0
+                else:
+                    self.price = self.baseprice * (2 ** (self.winnum ))
+                    self.money += self.price
+                    self.winnum += 1
+
                 print("下一次投注", self.price,"余额：",self.money)
             else:
                 self.money -= self.baseprice * (2 ** (self.winnum ))
@@ -387,3 +396,5 @@ def play_a_round(win_time_to_stop, pocket, pay, n):
 
 ### 呢哇 token=reSmG1p3tcBi0rstmIh1nAOq%2FI9jt5WlTULllk%2Fwyns2T30htKatYe3ArFJP8%2BSCt4O27Q%3D%3D; account=test621572; accountType=TESTtoken=reSmG1p3tcBi0rstmIh1nAOq%2FI9jt5WlTULllk%2Fwyns2T30htKatYe3ArFJP8%2BSCt4O27Q%3D%3D; account=test621572; accountType=TEST
 #md5Password=true; JSESSIONID=DFCB5BDDF0DADAFD45E987FD3BA93A5B; token=bvQxNLIubJIrWZHoOo%2BCK9hssjrdAwC3QplY5aQB7Vb079GCbYoPI%2BPRR9MOUku%2FIVH7TA%3D%3D; account=test756083; accountType=TEST
+
+#new2 token=t32IRuz2bXkIZcHO9Tm5lPrNTwbW%2B9LwquIr4oTP47YlcTZ5Id0ZJDzZmExTfdAp358WTg%3D%3D; account=test358088; accountType=TEST
