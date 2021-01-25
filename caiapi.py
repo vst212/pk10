@@ -93,19 +93,19 @@ class CaiPiaoApi:
 
                 eqcount = self.judge_list(arg1)
 
-                rvcount = 4 # 反转为5并不稳定
-                self.patter12(*arg1)
-                #
+                rvcount = 3 # 反转为5并不稳定
+                # self.patter12(*arg1)
+                # #
                 # self.patter13(*arg1)
-                # if eqcount <= rvcount:
-                #     # 反买
-                #     print("反买")
-                #     self.patter12(*arg1)
-                #
-                # if eqcount > rvcount:
-                #     # 正买
-                #     print("正买")
-                #     self.patter13(*arg1)
+                if eqcount <= rvcount:
+                    # 反买
+                    print("反买")
+                    self.patter12(*arg1)
+
+                if eqcount > rvcount:
+                    # 正买
+                    print("正买")
+                    self.patter13(*arg1)
 
         file = open('luz99i.txt', 'a')
         file.write(
@@ -150,17 +150,17 @@ class CaiPiaoApi:
 
         print("Eqcount", eqcount)
 
-        # rvcount = 4  # 反转为5并不稳定
-        # #
-        # if eqcount <= rvcount:
-        #     # 反买
-        #     print("反买")
-        #     return self.patter12(*arg1)
+        rvcount = 4  # 反转为5并不稳定
         #
-        # if eqcount > rvcount:
-        #     # 正买
-        #     print("正买")
-        return self.patter13(*arg1)
+        if eqcount <= rvcount:
+            # 反买
+            print("反买")
+            return self.patter12(*arg1)
+
+        if eqcount > rvcount:
+            # 正买
+            print("正买")
+            return self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
@@ -169,11 +169,11 @@ class CaiPiaoApi:
         if len(args) >= 8:  # 模拟模式
             if args[7] != args[6]:
                 if self.winnum == 4:
-                    self.price = self.baseprice * (2 ** (self.winnum ))
+                    self.price = self.baseprice * (2  ** (self.winnum ))
                     self.money += self.price
                     self.winnum =0
                 else:
-                    self.price = self.baseprice * (2 ** (self.winnum ))
+                    self.price = self.baseprice * ( 2 ** (self.winnum ))
                     self.money += self.price
                     self.winnum +=1
 
@@ -181,7 +181,7 @@ class CaiPiaoApi:
             else:
                 self.money -= self.baseprice * (2 ** (self.winnum ))
                 # self.money -= self.price
-                print("失败回到原点扣除", self.baseprice * (2 ** (self.winnum )),"剩余：",self.money)
+                print("失败回到原点扣除", self.baseprice * (2  ** (self.winnum )),"剩余：",self.money)
                 self.winnum = 0
                 self.price = self.baseprice
 
@@ -195,18 +195,18 @@ class CaiPiaoApi:
         if len(args) >= 8:  # 模拟模式
             if args[6] == args[7]:
                 if self.winnum == 4:
-                    self.price = self.baseprice * (1.5 ** (self.winnum))
+                    self.price = self.baseprice * (2  ** (self.winnum))
                     self.money += self.price
                     self.winnum = 0
                 else:
-                    self.price = self.baseprice * (1.5 ** (self.winnum ))
+                    self.price = self.baseprice * (2  ** (self.winnum ))
                     self.money += self.price
                     self.winnum += 1
 
                 print("下一次投注", self.price,"余额：",self.money)
             else:
-                self.money -= self.baseprice * (1.5  ** (self.winnum ))
-                print("失败回到原点扣除", self.baseprice * (1.5 ** (self.winnum)),"剩余：",self.money)
+                self.money -= self.baseprice * (2  ** (self.winnum ))
+                print("失败回到原点扣除", self.baseprice * (2  ** (self.winnum)),"剩余：",self.money)
                 self.winnum = 0
                 self.price = self.baseprice
                 # print("亏损100")
@@ -249,11 +249,13 @@ class CaiPiaoApi:
         if chajia > 0: # 这里修改价格 4轮为单位 单价为100 输光要20把
             if self.winnum == 4:
                 self.winnum = 0
+                self.price = self.baseprice * (2  ** (self.winnum))
             else:
-                self.maxlose = max([self.maxlose,self.lose])
-                self.lose =0
-                self.price = self.baseprice * (1.5 ** (self.winnum))
+
+                self.price = self.baseprice * (2  ** (self.winnum))
                 self.winnum += 1
+            self.maxlose = max([self.maxlose, self.lose])
+            self.lose = 0
 
             print("投注价格翻倍",self.price)
             alllog += "累积盈利：%s把,累计耗时%s小时,最大损失%s把" % (self.winnum,round(self.press_count/60,2),self.maxlose)
