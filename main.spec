@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\26946\\PycharmProjects\\pk10'],
+             pathex=['L:\\Users\\Administrator\\Desktop\\myproject\\pk10'],
              binaries=[],
              datas=[],
              hiddenimports=[],

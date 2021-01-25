@@ -64,9 +64,9 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        # self.moni2(rawlist=res['newlist'])
+        self.moni2(rawlist=res['newlist'])
 
-        return self.judge2(rawlist=res['newlist'])
+        # return self.judge2(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
@@ -94,18 +94,18 @@ class CaiPiaoApi:
                 eqcount = self.judge_list(arg1)
 
                 rvcount = 4 # 反转为5并不稳定
-                # self.patter12(*arg1)
+                self.patter12(*arg1)
                 #
                 # self.patter13(*arg1)
-                if eqcount <= rvcount:
-                    # 反买
-                    print("反买")
-                    self.patter12(*arg1)
-
-                if eqcount > rvcount:
-                    # 正买
-                    print("正买")
-                    self.patter13(*arg1)
+                # if eqcount <= rvcount:
+                #     # 反买
+                #     print("反买")
+                #     self.patter12(*arg1)
+                #
+                # if eqcount > rvcount:
+                #     # 正买
+                #     print("正买")
+                #     self.patter13(*arg1)
 
         file = open('luz99i.txt', 'a')
         file.write(
@@ -150,17 +150,17 @@ class CaiPiaoApi:
 
         print("Eqcount", eqcount)
 
-        rvcount = 4  # 反转为5并不稳定
+        # rvcount = 4  # 反转为5并不稳定
+        # #
+        # if eqcount <= rvcount:
+        #     # 反买
+        #     print("反买")
+        #     return self.patter12(*arg1)
         #
-        if eqcount <= rvcount:
-            # 反买
-            print("反买")
-            return self.patter12(*arg1)
-
-        if eqcount > rvcount:
-            # 正买
-            print("正买")
-        # return self.patter13(*arg1)
+        # if eqcount > rvcount:
+        #     # 正买
+        #     print("正买")
+        return self.patter13(*arg1)
 
     def patter12(self, *args):  # 反买
         # 对近5把进行判断
@@ -195,18 +195,18 @@ class CaiPiaoApi:
         if len(args) >= 8:  # 模拟模式
             if args[6] == args[7]:
                 if self.winnum == 4:
-                    self.price = self.baseprice * (2 ** (self.winnum))
+                    self.price = self.baseprice * (1.5 ** (self.winnum))
                     self.money += self.price
                     self.winnum = 0
                 else:
-                    self.price = self.baseprice * (2 ** (self.winnum ))
+                    self.price = self.baseprice * (1.5 ** (self.winnum ))
                     self.money += self.price
                     self.winnum += 1
 
                 print("下一次投注", self.price,"余额：",self.money)
             else:
-                self.money -= self.baseprice * (2 ** (self.winnum ))
-                print("失败回到原点扣除", self.baseprice * (2 ** (self.winnum)),"剩余：",self.money)
+                self.money -= self.baseprice * (1.5  ** (self.winnum ))
+                print("失败回到原点扣除", self.baseprice * (1.5 ** (self.winnum)),"剩余：",self.money)
                 self.winnum = 0
                 self.price = self.baseprice
                 # print("亏损100")
@@ -247,12 +247,14 @@ class CaiPiaoApi:
         self.price = self.baseprice
 
         if chajia > 0: # 这里修改价格 4轮为单位 单价为100 输光要20把
-            self.winnum += 1
-            self.maxlose = max([self.maxlose,self.lose])
-            self.lose =0
-            self.price = self.baseprice * (2 ** (self.winnum))
             if self.winnum == 4:
                 self.winnum = 0
+            else:
+                self.maxlose = max([self.maxlose,self.lose])
+                self.lose =0
+                self.price = self.baseprice * (1.5 ** (self.winnum))
+                self.winnum += 1
+
             print("投注价格翻倍",self.price)
             alllog += "累积盈利：%s把,累计耗时%s小时,最大损失%s把" % (self.winnum,round(self.press_count/60,2),self.maxlose)
         if chajia < 0:
