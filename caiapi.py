@@ -64,9 +64,9 @@ class CaiPiaoApi:
         res2 = {"count2": count2, "count": count, "count199": count190, "count200": Counter(sec[190:200]),
                 "lenlist": lenlist[::-1], "newlist": sec}
 
-        self.moni2(rawlist=res['newlist'])
+        # self.moni2(rawlist=res['newlist'])
 
-        # return self.judge2(rawlist=res['newlist'])
+        return self.judge2(rawlist=res['newlist'])
 
         # 跟买两把的正确率达到 200把大概100次机会  花费3个小时 获胜 最多连输50次   累计获胜50次  每次投注10 最终可获胜500  投注100次  -亏损 50*10*0.02 减去支出10块  最终获利
         # 490 3个小时
