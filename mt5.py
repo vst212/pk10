@@ -239,8 +239,8 @@ class fuckmt5:
             # request the result as a dictionary and display it element by element
             result_dict = result2._asdict()
             print(result_dict)
-            if result2.comment == 'Requote':
-                self.fill(result,lot)
+            if result2.retcode != 10009:
+                self.fill(result, lot)
             # for field in result_dict.keys():
             #     print("   {}={}".format(field, result_dict[field]))
             #     # if this is a trading request structure, display it element by element as well
