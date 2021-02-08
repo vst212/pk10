@@ -231,14 +231,16 @@ class fuckmt5:
         }
 
         # send a trading request
-        result = mt5.order_send(request)
+        result2 = mt5.order_send(request)
         # check the execution result
         print("1. 平仓订单(): by {} {} lots at {} with deviation={} points".format(symbol, lot, price, deviation))
-        if result.retcode != mt5.TRADE_RETCODE_DONE:
-            print("2. 平仓订单失败, retcode={}".format(result.retcode))
+        if result2.retcode != mt5.TRADE_RETCODE_DONE:
+            print("2. 平仓订单失败, retcode={}".format(result2.retcode))
             # request the result as a dictionary and display it element by element
-            result_dict = result._asdict()
+            result_dict = result2._asdict()
             print(result_dict)
+            if result2.comment == 'Requote':
+                self.fill(result,lot)
             # for field in result_dict.keys():
             #     print("   {}={}".format(field, result_dict[field]))
             #     # if this is a trading request structure, display it element by element as well
@@ -248,8 +250,8 @@ class fuckmt5:
             #             print("       traderequest: {}={}".format(tradereq_filed, traderequest_dict[tradereq_filed]))
             return None
 
-        print("2. 平仓订单成功, ", result)
-        return result
+        print("2. 平仓订单成功, ", result2)
+        return result2
 
     def open(self):
         """开新仓 平旧仓函数"""
