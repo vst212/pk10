@@ -22,8 +22,8 @@ def loginmt5():
         return None
 
     # now connect to another trading account specifying the password
-    account = 41045365
-    authorized = mt5.login(account, password="b0pwngof", server="MetaQuotes-Demo")
+    account = 41138506
+    authorized = mt5.login(account, password="dhq2fgox", server="MetaQuotes-Demo")
     if authorized:
         # display trading account data 'as is'
         print(mt5.account_info())
@@ -49,19 +49,21 @@ class fuckmt5:
     在一分钟内寻找点差最小的点进行交易
     """
 
-    def __init__(self, mt5=None, symbol=None, maxdiancha=2, lot=0.01):
+    def __init__(self, mt5=None, symbol=None, maxdiancha=3, lot=0.01, devitation=3):
         self.mt5 = mt5
         self.symbol = symbol
         self.maxdiancha = maxdiancha
         self.lot = lot
         self.winnum = 0
         self.baselot = 0.01
+        self.deviation = devitation
 
     def get_history(self, period=None, num=3):
         # 获取过去的bar从当前开始
         mt5 = self.mt5
         period = period or mt5.TIMEFRAME_M1
         rates = mt5.copy_rates_from_pos(self.symbol, period, 0, num)  # 从当前到过去10条记录
+
         newlist = [{"开盘": i[1], "收盘": i[4], "差价": round((i[4] - i[1]) * 1000, len(str(i[1])) - 4)} for i in rates]
         print("过去的记录:", newlist)
         return newlist
@@ -80,7 +82,7 @@ class fuckmt5:
         else:
             return ["sell", close, is_win]
 
-    def buy(self, deviation=2):
+    def buy(self):
         """
         市价买入函数，注意计算点差，点差太大不进行交易
         symbol:交易的品种 价格
@@ -91,6 +93,7 @@ class fuckmt5:
         mt5 = self.mt5
         symbol = self.symbol
         lot = self.lot
+        deviation = self.deviation
         diancha = abs(mt5.symbol_info_tick(symbol).ask - mt5.symbol_info_tick(symbol).bid)
         if diancha < self.maxdiancha:
             """在固定点差范围内才进行买入 每秒钟检查一遍"""
@@ -120,6 +123,8 @@ class fuckmt5:
                 # request the result as a dictionary and display it element by element
                 result_dict = result._asdict()
                 print(result_dict)
+                if result.comment == 'Requote':
+                    self.buy()
                 # for field in result_dict.keys():
                 #     print("   {}={}".format(field, result_dict[field]))
                 #     # if this is a trading request structure, display it element by element as well
@@ -127,14 +132,13 @@ class fuckmt5:
                 #         traderequest_dict = result_dict[field]._asdict()
                 #         for tradereq_filed in traderequest_dict:
                 #             print("       traderequest: {}={}".format(tradereq_filed, traderequest_dict[tradereq_filed]))
-                mt5.shutdown()
                 return None
 
             print("2. 买入成功, ", result)
             return result
         return None
 
-    def sell(self, deviation=2):
+    def sell(self):
         """
         市价卖出函数，注意计算点差，点差太大不进行交易
         symbol:交易的品种 价格
@@ -145,6 +149,7 @@ class fuckmt5:
         mt5 = self.mt5
         symbol = self.symbol
         lot = self.lot
+        deviation = self.deviation
         diancha = abs(mt5.symbol_info_tick(symbol).ask - mt5.symbol_info_tick(symbol).bid)
 
         if diancha < self.maxdiancha:
@@ -174,6 +179,8 @@ class fuckmt5:
                 # request the result as a dictionary and display it element by element
                 result_dict = result._asdict()
                 print(result_dict)
+                if result.comment == 'Requote':
+                    self.sell()
                 # for field in result_dict.keys():
                 #     print("   {}={}".format(field, result_dict[field]))
                 #     # if this is a trading request structure, display it element by element as well
@@ -181,14 +188,13 @@ class fuckmt5:
                 #         traderequest_dict = result_dict[field]._asdict()
                 #         for tradereq_filed in traderequest_dict:
                 #             print("       traderequest: {}={}".format(tradereq_filed, traderequest_dict[tradereq_filed]))
-                mt5.shutdown()
                 return None
 
             print("2. 卖出成功, ", result)
             return result
         return None
 
-    def fill(self, result=None, lot=0.01, deviation=2):  # 这里应该是平掉所有的仓
+    def fill(self, result=None, lot=0.01):  # 这里应该是平掉所有的仓
         """
         平仓函数，注意计算点差，点差太大不进行交易
         symbol:交易的品种 价格
@@ -198,53 +204,52 @@ class fuckmt5:
         # 根据每个周期进行开仓平仓 统计价格
         mt5 = self.mt5
         symbol = self.symbol
+        deviation = self.deviation
         diancha = abs(mt5.symbol_info_tick(symbol).ask - mt5.symbol_info_tick(symbol).bid)
-        if diancha < self.maxdiancha:
-            if result.request.type == mt5.ORDER_TYPE_BUY:
-                deal_type = mt5.ORDER_TYPE_SELL
-                price = mt5.symbol_info_tick(symbol).bid
-            else:
-                deal_type = mt5.ORDER_TYPE_BUY
-                price = mt5.symbol_info_tick(symbol).ask
+        # if diancha < self.maxdiancha:
+        if result.request.type == mt5.ORDER_TYPE_BUY:
+            deal_type = mt5.ORDER_TYPE_SELL
+            price = mt5.symbol_info_tick(symbol).bid
+        else:
+            deal_type = mt5.ORDER_TYPE_BUY
+            price = mt5.symbol_info_tick(symbol).ask
 
-            position_id = result.order
+        position_id = result.order
 
-            request = {
-                "action": mt5.TRADE_ACTION_DEAL,
-                "symbol": symbol,
-                "volume": lot,
-                "type": deal_type,
-                "position": position_id,
-                "price": price,
-                "deviation": deviation,
-                "magic": 234000,
-                "comment": "关闭订单！",
-                "type_time": mt5.ORDER_TIME_GTC,
-                "type_filling": mt5.ORDER_FILLING_RETURN,
-            }
+        request = {
+            "action": mt5.TRADE_ACTION_DEAL,
+            "symbol": symbol,
+            "volume": lot,
+            "type": deal_type,
+            "position": position_id,
+            "price": price,
+            "deviation": deviation,
+            "magic": 234000,
+            "comment": "关闭订单！",
+            "type_time": mt5.ORDER_TIME_GTC,
+            "type_filling": mt5.ORDER_FILLING_RETURN,
+        }
 
-            # send a trading request
-            result = mt5.order_send(request)
-            # check the execution result
-            print("1. 平仓订单(): by {} {} lots at {} with deviation={} points".format(symbol, lot, price, deviation))
-            if result.retcode != mt5.TRADE_RETCODE_DONE:
-                print("2. 平仓订单失败, retcode={}".format(result.retcode))
-                # request the result as a dictionary and display it element by element
-                result_dict = result._asdict()
-                print(result_dict)
-                # for field in result_dict.keys():
-                #     print("   {}={}".format(field, result_dict[field]))
-                #     # if this is a trading request structure, display it element by element as well
-                #     if field == "request":
-                #         traderequest_dict = result_dict[field]._asdict()
-                #         for tradereq_filed in traderequest_dict:
-                #             print("       traderequest: {}={}".format(tradereq_filed, traderequest_dict[tradereq_filed]))
-                mt5.shutdown()
-                return None
+        # send a trading request
+        result = mt5.order_send(request)
+        # check the execution result
+        print("1. 平仓订单(): by {} {} lots at {} with deviation={} points".format(symbol, lot, price, deviation))
+        if result.retcode != mt5.TRADE_RETCODE_DONE:
+            print("2. 平仓订单失败, retcode={}".format(result.retcode))
+            # request the result as a dictionary and display it element by element
+            result_dict = result._asdict()
+            print(result_dict)
+            # for field in result_dict.keys():
+            #     print("   {}={}".format(field, result_dict[field]))
+            #     # if this is a trading request structure, display it element by element as well
+            #     if field == "request":
+            #         traderequest_dict = result_dict[field]._asdict()
+            #         for tradereq_filed in traderequest_dict:
+            #             print("       traderequest: {}={}".format(tradereq_filed, traderequest_dict[tradereq_filed]))
+            return None
 
-            print("2. 平仓订单成功, ", result)
-            return result
-        return None
+        print("2. 平仓订单成功, ", result)
+        return result
 
     def open(self):
         """开新仓 平旧仓函数"""
@@ -263,14 +268,20 @@ class fuckmt5:
         # 根据winnum判断是否加仓
         if predict[0] == "buy":
             result = self.buy()
-            run_date = datetime.datetime.now() + datetime.timedelta(seconds=60)
-            scheduler = BackgroundScheduler()
-            scheduler.add_job(self.fill, 'date', run_date=run_date, args=[result, self.lot])
+            run_date = datetime.datetime.now() + datetime.timedelta(seconds=59)
+            if result:
+                print("开始平仓。。。。。")
+                scheduler = BackgroundScheduler()
+                scheduler.add_job(self.fill, 'date', run_date=run_date, args=[result, self.lot])
+                scheduler.start()
         elif predict[0] == "sell":
             result = self.sell()
-            run_date = datetime.datetime.now() + datetime.timedelta(seconds=60)
-            scheduler = BackgroundScheduler()
-            scheduler.add_job(self.fill, 'date', run_date=run_date, args=[result, self.lot])
+            run_date = datetime.datetime.now() + datetime.timedelta(seconds=59)
+            if result:
+                print("开始平仓。。。。。")
+                scheduler = BackgroundScheduler()
+                scheduler.add_job(self.fill, 'date', run_date=run_date, args=[result, self.lot])
+                scheduler.start()
 
     def start(self):  # 定时器函数
         scheduler = BlockingScheduler()
