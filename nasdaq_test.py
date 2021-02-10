@@ -57,14 +57,14 @@ for index,item  in enumerate(newlist):
 # print(aclist)
 # print(fxlist)
 
-init_money = 100  # 初始资金100美金  # 买迷你手预付款13  每次赚的就是差价
+init_money = 0  # 初始资金100美金  # 买迷你手预付款13  每次赚的就是差价
 
 
 # 计算跟买的胜率
 
 
 
-class Nas:
+class Celue:
     win_count = 0
 
     money = 0
@@ -91,5 +91,5 @@ class Nas:
         print(len(aclist))
 
 
-Nas().test(aclist)
+# Celue().test(aclist)
 
