@@ -10,7 +10,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 
-def loginmt5():
+def loginmt5(account,password,server):
     """登录mt5返回实例"""
     # display data on the MetaTrader 5 package
     print("MetaTrader5 package author: ", mt5.__author__)
@@ -22,8 +22,8 @@ def loginmt5():
         return None
 
     # now connect to another trading account specifying the password
-    account = 41138506
-    authorized = mt5.login(account, password="dhq2fgox", server="MetaQuotes-Demo")
+    account = account
+    authorized = mt5.login(account, password=password, server=server)
     if authorized:
         # display trading account data 'as is'
         print(mt5.account_info())
@@ -41,7 +41,7 @@ def loginmt5():
 
 # shut down connection to the MetaTrader 5 terminal
 
-mymt5 = loginmt5()
+
 
 
 class fuckmt5:
@@ -49,13 +49,13 @@ class fuckmt5:
     在一分钟内寻找点差最小的点进行交易
     """
 
-    def __init__(self, mt5=None, symbol=None, maxdiancha=3, lot=0.01, devitation=3):
+    def __init__(self, mt5=None, symbol=None, maxdiancha=1000, lot=0.1, devitation=1000):
         self.mt5 = mt5
         self.symbol = symbol
         self.maxdiancha = maxdiancha
         self.lot = lot
         self.winnum = 0
-        self.baselot = 0.01
+        self.baselot = lot
         self.deviation = devitation
 
     def get_history(self, period=None, num=3):
@@ -73,14 +73,16 @@ class fuckmt5:
         close = history[1]['收盘']
         is_win = (history[1]['差价'] > 0 and history[0]['差价'] > 0) or (history[1]['差价'] < 0 and history[0]['差价'] < 0)
 
-        if history[1]["差价"] > 0:
+        if history[0]["差价"] > 0:
             return ["buy", close, is_win]
-        elif history[1]['差价'] < 0:
+        elif history[0]['差价'] < 0:
             return ["sell", close, is_win]
-        elif history[0]['差价'] > 0:
-            return ["buy", close, is_win]
         else:
-            return ["sell", close, is_win]
+            return {"balance",close,is_win}
+        # elif history[0]['差价'] > 0:
+        #     return ["buy", close, is_win]
+        # else:
+        #     return ["sell", close, is_win]
 
     def buy(self):
         """
@@ -111,7 +113,7 @@ class fuckmt5:
                 "magic": 234000,  # 标识码
                 "comment": "开仓买入！！",
                 "type_time": mt5.ORDER_TIME_GTC,
-                "type_filling": mt5.ORDER_FILLING_RETURN,
+                "type_filling": mt5.ORDER_FILLING_IOC,
             }
 
             # send a trading request
@@ -167,7 +169,7 @@ class fuckmt5:
                 "magic": 234000,  # 标识码
                 "comment": "开仓卖出！！",
                 "type_time": mt5.ORDER_TIME_GTC,
-                "type_filling": mt5.ORDER_FILLING_RETURN,
+                "type_filling": mt5.ORDER_FILLING_IOC,
             }
 
             # send a trading request
@@ -227,7 +229,7 @@ class fuckmt5:
             "magic": 234000,
             "comment": "关闭订单！",
             "type_time": mt5.ORDER_TIME_GTC,
-            "type_filling": mt5.ORDER_FILLING_RETURN,
+            "type_filling": mt5.ORDER_FILLING_IOC,
         }
 
         # send a trading request
@@ -239,8 +241,7 @@ class fuckmt5:
             # request the result as a dictionary and display it element by element
             result_dict = result2._asdict()
             print(result_dict)
-            if result2.retcode != 10009:
-                self.fill(result, lot)
+            self.fill(result, lot)
             # for field in result_dict.keys():
             #     print("   {}={}".format(field, result_dict[field]))
             #     # if this is a trading request structure, display it element by element as well
@@ -286,13 +287,17 @@ class fuckmt5:
                 scheduler.start()
 
     def start(self):  # 定时器函数
-        scheduler = BlockingScheduler()
+        scheduler = BackgroundScheduler()
         scheduler.add_job(self.open, 'cron', day_of_week='*', hour='*', minute="*", second=1, )
         scheduler.start()
 
 
 # fuckmt5(mt5=mymt5,symbol="EURUSD").buy()
-fuckmt5(mt5=mymt5, symbol="EURUSD").start()
+mymt5 = loginmt5(account="50502883",password="ZAtUMRdF",server="ICMarketsSC-Demo")
+fuckmt5(mt5=mymt5, symbol="HK50").start()
+
+# mymt2  = loginmt5(account="50502886",password="2Se5iG4G",server="ICMarketsSC-Demo")
+# fuckmt5(mt5=mymt5, symbol="EURUSD").start()
 
 # 获取未平仓的商品的价格
 # biaodi = "EURUSD"
