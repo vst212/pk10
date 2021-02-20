@@ -153,7 +153,7 @@ class fuckmt5:
         plt.show()
 
     def test_qujian(self, period=None):
-        num = 144  # 一个月
+        num = 100 # 一个月
         his = self.get_history(num=num, period=period)
         direct = True # 方向为买进
         tmplist = {}
@@ -243,11 +243,19 @@ class fuckmt5:
         ## 一小时的盈利均值 在1.4左右  最大值达到5.97  超过3为小概率事件了    最小盈利都有0.23
 
         # 柱状图
-        df = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji},
-                          columns=['zero', 'leiji','yingli'])
+        df = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji,"x":range(num)},
+                          columns=['zero', 'yingli'])
+
+        df2 = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji,"x":range(num)},
+                          columns=['zero', 'leiji'])
         # df.plot.hist(bins=100)
 
-        df.plot()  ## 默认是折线图   这是盈利曲线
+        #df.plot.scatter(x='x', y='yingli')
+
+        # df.plot()
+
+        df.plot(kind='bar')  ## 默认是折线图   这是盈利曲线 area  bar
+        df2.plot()
 
         # 打印一个买入卖出的曲线
 
