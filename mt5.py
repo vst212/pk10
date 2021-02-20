@@ -7,15 +7,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
 import MetaTrader5 as mt5
 import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
-
-
 
 
 def loginmt5(account, password, server):
@@ -66,36 +62,37 @@ class fuckmt5:
         self.last_low = 0
         self.last_high = 0
 
-    def get_history(self, period=None, num=3, beishu=1000,pos=0):
+    def get_history(self, period=None, num=3, beishu=1000, pos=0):
         # 获取过去的bar从当前开始
         mt5 = self.mt5
         period = period or mt5.TIMEFRAME_M1
         rates = mt5.copy_rates_from_pos(self.symbol, period, pos, num)  # 从当前到过去10条记录
 
         newlist = [
-            {"开盘": round(i[1],5), "收盘": round(i[4],5), "差价": round((i[4] - i[1]) * beishu, 2), "最高价": round(i[2],5), "最低价": round(i[3],5)}
+            {"开盘": round(i[1], 5), "收盘": round(i[4], 5), "差价": round((i[4] - i[1]) * beishu, 2), "最高价": round(i[2], 5),
+             "最低价": round(i[3], 5)}
             for i in rates]
         print("过去的记录:", newlist)
         return newlist
 
-    def get_qujian(self,period = None):
-        num  = 2000
-        his  = self.get_history(num=num,period=period)
-        tmplist =  {}
-        yingli  = []
+    def get_qujian(self, period=None):
+        num = 2000
+        his = self.get_history(num=num, period=period)
+        tmplist = {}
+        yingli = []
         kuisun = []
         chajia = []  # 使用累计算法  反向后重新计数
-        is_up  = False
+        is_up = False
         is_down = False
-        tmpdown  = 0
+        tmpdown = 0
         tmpup = 0
-        leiji =  []
+        leiji = []
         for i in his:
             maxqujian = i['最高价'] - i['最低价']
             maxqujian = round(maxqujian * 1000, 5)
             if i["差价"] >= 0:
-                maxchajia = i['收盘'] -i['开盘']
-                maxchajia= round(maxchajia * 1000, 5)
+                maxchajia = i['收盘'] - i['开盘']
+                maxchajia = round(maxchajia * 1000, 5)
                 chajia.append(maxchajia)
                 tmpup += maxchajia
                 is_up = True
@@ -105,8 +102,8 @@ class fuckmt5:
                 # 添加累计数
 
             if i["差价"] < 0:
-                maxchajia = i['开盘'] -i['收盘']
-                maxchajia= -round(maxchajia * 1000, 5)
+                maxchajia = i['开盘'] - i['收盘']
+                maxchajia = -round(maxchajia * 1000, 5)
                 chajia.append(maxchajia)
                 # tmpdown  += maxchajia
                 tmpup += maxchajia
@@ -120,115 +117,6 @@ class fuckmt5:
             if maxqujian <= 0.08:
                 kuisun.append(maxqujian)
 
-
-        # yingli.sort()
-        # kuisun.sort()
-        tmplist["可盈利"] = yingli
-        tmplist["亏损"]  = kuisun
-
-
-
-        print(tmplist,len(yingli),len(kuisun),"盈利次数:%s" %(len(yingli) -len(kuisun)))
-
-        print({"max":np.max(yingli),"min":np.min(yingli),"mean":np.mean(yingli)})
-
-        print(chajia)
-        print({"正买曲线":chajia,"结果":sum(chajia)})
-        ## 一小时的盈利均值 在1.4左右  最大值达到5.97  超过3为小概率事件了    最小盈利都有0.23
-
-        # 柱状图
-        df = pd.DataFrame({'yingli': yingli,"maxchajia":chajia,"zero":[0] * num,"leiji":leiji }, columns=['zero','leiji'])
-        # df.plot.hist(bins=100)
-
-        df.plot() ## 默认是折线图   这是盈利曲线
-
-        # 打印一个买入卖出的曲线
-
-        # 累积折线图规律  如果某次翻转超过之前的幅度则继续跟进    正向幅度超过2.2 则购买反向
-
-        # 看单次涨幅   超过某个点延续趋势  超过趋势极限点 翻转趋势   单次涨幅 + 累计涨幅综合评估 算出翻转点
-
-
-
-        plt.show()
-
-    def test_qujian(self, period=None):
-        num = 100 # 一个月
-        his = self.get_history(num=num, period=period)
-        direct = True # 方向为买进
-        tmplist = {}
-        yingli = []
-        kuisun = []
-        chajia = []  # 使用累计算法  反向后重新计数
-        is_up = False
-        is_down = False
-        tmpdown = 0
-        tmpup = 0
-        leiji = []
-        for i in his:
-            # maxqujian = i['最高价'] - i['最低价']
-            # maxqujian = round(maxqujian * 1000, 5)
-            if i["差价"] >= 0:
-                maxchajia = i['收盘'] - i['开盘']
-                maxchajia = round(maxchajia * 1000, 5)
-
-
-                yingli.append(maxchajia)
-
-                chajia.append(maxchajia)
-
-                # if maxchajia >=3:
-                #     tmpup +=3
-                # else:
-                tmpup += maxchajia
-                # if direct:
-                #     tmpup += maxchajia
-                #     direct = True
-                #     if tmpup >= 4:
-                #         direct = False
-                # if not direct:
-                #     direct = True
-                #     tmpup -= maxchajia
-
-                is_up = True
-
-                # tmpdown = 0
-                # if  is_up:
-                leiji.append(tmpup)
-                # 添加累计数
-
-            if i["差价"] < 0:
-                maxchajia = i['收盘'] - i['开盘']
-                maxchajia = round(maxchajia * 1000, 5)
-                print(maxchajia)
-                yingli.append(maxchajia)
-
-                chajia.append(maxchajia)
-
-                # if maxchajia <=-1:
-                #     tmpup -=1
-                # else:
-                tmpup += maxchajia
-
-                # tmpdown  += maxchajia
-                # if direct:
-                #     tmpup += maxchajia
-                #     direct = False
-                #
-                # if not direct:
-                #     direct = False
-                #     tmpup -= maxchajia
-                #     if tmpup <= -2.8:
-                #         direct = True
-
-                is_down = True
-
-                # tmpup =0
-                # if is_down:
-                leiji.append(tmpup)
-
-
-
         # yingli.sort()
         # kuisun.sort()
         tmplist["可盈利"] = yingli
@@ -239,23 +127,15 @@ class fuckmt5:
         print({"max": np.max(yingli), "min": np.min(yingli), "mean": np.mean(yingli)})
 
         print(chajia)
-        print({"正买曲线": yingli, "结果": sum(yingli)})
+        print({"正买曲线": chajia, "结果": sum(chajia)})
         ## 一小时的盈利均值 在1.4左右  最大值达到5.97  超过3为小概率事件了    最小盈利都有0.23
 
         # 柱状图
-        df = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji,"x":range(num)},
-                          columns=['zero', 'yingli'])
-
-        df2 = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji,"x":range(num)},
+        df = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji},
                           columns=['zero', 'leiji'])
         # df.plot.hist(bins=100)
 
-        #df.plot.scatter(x='x', y='yingli')
-
-        # df.plot()
-
-        df.plot(kind='bar')  ## 默认是折线图   这是盈利曲线 area  bar
-        df2.plot()
+        df.plot()  ## 默认是折线图   这是盈利曲线
 
         # 打印一个买入卖出的曲线
 
@@ -264,8 +144,6 @@ class fuckmt5:
         # 看单次涨幅   超过某个点延续趋势  超过趋势极限点 翻转趋势   单次涨幅 + 累计涨幅综合评估 算出翻转点
 
         plt.show()
-
-
 
     def get_direct(self):
         history = self.get_history()
@@ -467,6 +345,164 @@ class fuckmt5:
         scheduler.add_job(self.open, 'cron', day_of_week='*', hour='*', minute="*", second=1, )
         scheduler.start()
 
+    def test_qujian(self, period=None):
+        num = 100  # 一个月
+        his = self.get_history(num=num, period=period)
+        tmplist = {}
+        yingli = []
+        kuisun = []
+        chajia = []  # 使用累计算法  反向后重新计数
+        is_up = False
+        is_down = False
+        tmpdown = 0
+        tmpup = 0
+
+        leiji = []
+        predict_tmp = 0
+        predict_res = []  ## 预测收益值得集合
+        for index, i in enumerate(his):
+            # maxqujian = i['最高价'] - i['最低价']
+            # maxqujian = round(maxqujian * 1000, 5)
+            if index > 5:
+                if i["差价"] >= 0:
+                    maxchajia = i['收盘'] - i['开盘']
+                    maxchajia = round(maxchajia * 1000, 5)
+
+                    yingli.append(maxchajia)
+
+                    chajia.append(maxchajia)
+
+                    # if maxchajia >=3:
+                    #     tmpup +=3
+                    # else:
+                    tmpup += maxchajia
+
+                    rawlist = his[index - 5:index]
+                    direct = self.predict_next(rawlist)
+                    if direct and direct.get("direct"):
+                        predict_tmp += maxchajia
+                    elif direct and  not direct.get("direct"):
+                        predict_tmp -= maxchajia
+                    # if direct:
+                    #     tmpup += maxchajia
+                    #     direct = True
+                    #     if tmpup >= 4:
+                    #         direct = False
+                    # if not direct:
+                    #     direct = True
+                    #     tmpup -= maxchajia
+
+                    is_up = True
+
+                    # tmpdown = 0
+                    # if  is_up:
+                    leiji.append(tmpup)
+                    predict_res.append(predict_tmp)
+                    # 添加累计数
+
+                if i["差价"] < 0:
+                    maxchajia = i['收盘'] - i['开盘']
+                    maxchajia = round(maxchajia * 1000, 5)
+                    print(maxchajia)
+                    yingli.append(maxchajia)
+
+                    chajia.append(maxchajia)
+
+                    # if maxchajia <=-1:
+                    #     tmpup -=1
+                    # else:
+                    tmpup += maxchajia
+
+                    # tmpdown  += maxchajia
+                    # if direct:
+                    #     tmpup += maxchajia
+                    #     direct = False
+                    #
+                    # if not direct:
+                    #     direct = False
+                    #     tmpup -= maxchajia
+                    #     if tmpup <= -2.8:
+                    #         direct = True
+
+                    rawlist = his[index - 5:index]
+                    direct = self.predict_next(rawlist)
+                    if direct and direct.get("direct"):
+                        predict_tmp += maxchajia
+                    elif direct and  not direct.get("direct"):
+                        predict_tmp -= maxchajia
+
+                    # tmpup =0
+                    # if is_down:
+                    leiji.append(tmpup)  # 旧的累计曲线
+                    predict_res.append(predict_tmp)
+
+        # yingli.sort()
+        # kuisun.sort()
+        tmplist["可盈利"] = yingli
+        tmplist["亏损"] = kuisun
+
+        print(tmplist, len(yingli), len(kuisun), "盈利次数:%s" % (len(yingli) - len(kuisun)))
+
+        print({"max": np.max(yingli), "min": np.min(yingli), "mean": np.mean(yingli)})
+
+        print(chajia)
+        print({"正买曲线": yingli, "结果": sum(yingli)})
+        ## 一小时的盈利均值 在1.4左右  最大值达到5.97  超过3为小概率事件了    最小盈利都有0.23
+
+        # 柱状图
+        df = pd.DataFrame({'yingli': yingli, "maxchajia": chajia, "zero": [0] * num, "leiji": leiji, "x": range(num)},
+                          columns=['zero', 'yingli'])
+
+        df2 = pd.DataFrame({'yingli': yingli, "maxchajia": chajia,
+                            "zero": [0] * num, "leiji": leiji,
+                            "x": range(num),"predict":predict_res
+                            },
+                           columns=['zero', 'leiji','predict'])
+        # df.plot.hist(bins=100)
+
+        # df.plot.scatter(x='x', y='yingli')
+
+        # df.plot()
+
+        df.plot(kind='bar')  ## 默认是折线图   这是盈利曲线 area  bar
+        df2.plot()
+
+        # 打印一个买入卖出的曲线
+
+        # 累积折线图规律  如果某次翻转超过之前的幅度则继续跟进    正向幅度超过2.2 则购买反向
+
+        # 看单次涨幅   超过某个点延续趋势  超过趋势极限点 翻转趋势   单次涨幅 + 累计涨幅综合评估 算出翻转点
+
+        plt.show()
+
+    def predict_next(self, rawlist):
+        nega = 0
+        posi = 0
+        for i in rawlist:
+            if i > 0:
+                posi += 1
+            if i < 0:
+                nega += 1
+        total = sum(rawlist)
+
+        ## 出现峰值得情况  波动很剧烈 价格上下波动 最终偏向大幅上升 # 这种情况价格会出现反转
+        if posi - nega < 2 and total > 3:
+            return {"direct": False}
+
+        elif nega - posi < 2 and total < -3:
+            return {"direct": True}
+
+        ### 其他情况 单方面突进  价格跟随即可
+
+        elif nega - posi >= 2:
+            return {"direct": False}
+
+        elif posi - nega >= 2:
+            return {"direct": True}
+
+        else:
+            return None
+
 
 # fuckmt5(mt5=mymt5,symbol="EURUSD").buy()
 
@@ -492,16 +528,16 @@ class Celue:
                     self.money += item['cj']
                     print("money:", round(self.money, 2))
                 else:
-                    self.money -= item['cj']  #* (2 ** (self.winnum))
+                    self.money -= item['cj']  # * (2 ** (self.winnum))
                     # self.winnum = 0
                     print("money:", round(self.money, 2))
-        print({"实际盈利": round(round(self.money, 2) - round(len(aclist) * tips, 2),2), "原始盈利:": round(self.money, 2),
-               "手续费": round(len(aclist) * tips, 2), "耗时":"%s小时" % (len(aclist) // 60) })
+        print({"实际盈利": round(round(self.money, 2) - round(len(aclist) * tips, 2), 2), "原始盈利:": round(self.money, 2),
+               "手续费": round(len(aclist) * tips, 2), "耗时": "%s小时" % (len(aclist) // 60)})
 
-    def count_cj(self,aclist):
+    def count_cj(self, aclist):
         newlist = [i["cj"] for i in aclist]
         newlist2 = [i["fx"] for i in aclist]
-        print(Counter(newlist),Counter(newlist2))
+        print(Counter(newlist), Counter(newlist2))
 
     def celue1(self, aclist, tips=0.03):  # 根据上一把的方向进行判断
         sxf = 0
@@ -509,7 +545,7 @@ class Celue:
         tztime = 0
         for index, item in enumerate(aclist):
             if index >= 2:
-                if  item['fx'] == "停止":
+                if item['fx'] == "停止":
                     tztime += 1
                 elif item['fx'] != aclist[index - 1]['fx']:
                     self.money += abs(item['cj'])
@@ -521,29 +557,27 @@ class Celue:
                     sxf += 0.07
                     time -= 1
                     print("亏损", abs(item['cj']))
-        print({"盈利次数":time,"停止次数":tztime})
-        print({"实际盈利": round(round(self.money, 2) - round(sxf, 2),2), "原始盈利:": round(self.money, 2),
-               "手续费": round(sxf, 2), "耗时":"%s小时" % (len(aclist) // 60) })
+        print({"盈利次数": time, "停止次数": tztime})
+        print({"实际盈利": round(round(self.money, 2) - round(sxf, 2), 2), "原始盈利:": round(self.money, 2),
+               "手续费": round(sxf, 2), "耗时": "%s小时" % (len(aclist) // 60)})
 
     def robot(self):
 
         pass
 
-    def history_recorder(self,newpoint):
+    def history_recorder(self, newpoint):
         """记录最高点最低点"""
-        self.last_high = max(self.last_high,newpoint)
-        self.last_low = max(self.last_low,newpoint)
-
-
+        self.last_high = max(self.last_high, newpoint)
+        self.last_low = max(self.last_low, newpoint)
 
 
 def reform_list(rawlist):
     newlist = []
     for i in rawlist:
         if i['差价'] > 0:
-            newlist.append({"fx": "买入", "cj": round((i["最高价"] - i['最低价']) * 1000,2)})
+            newlist.append({"fx": "买入", "cj": round((i["最高价"] - i['最低价']) * 1000, 2)})
         elif i['差价'] < 0:
-            newlist.append({"fx": "卖出", "cj": round((i["最低价"] - i['最高价']) * 1000,2)})
+            newlist.append({"fx": "卖出", "cj": round((i["最低价"] - i['最高价']) * 1000, 2)})
         else:
             newlist.append({"fx": "停止", "cj": i["差价"]})
     return newlist
@@ -556,8 +590,6 @@ fuckmt5(mt5=mymt5, symbol="EURUSD").test_qujian(mt5.TIMEFRAME_H1)
 # 1小时买卖效果最佳 而且可以挂单 有足够长的时间获利
 
 
-
-
 # rawlist = fuckmt5(mt5=mymt5, symbol="EURUSD").get_history(period=mymt5.TIMEFRAME_M1,num=200)
 # newlist = reform_list(rawlist)
 # # print("======================================================")
@@ -568,7 +600,6 @@ fuckmt5(mt5=mymt5, symbol="EURUSD").test_qujian(mt5.TIMEFRAME_H1)
 # print(Counter(guilv))
 # Celue().count_cj(newlist)
 # Celue().celue1(newlist)
-
 
 
 # 规则1 超过==0.3 价格就会反向  或价格改变比较上一次超过0.3
