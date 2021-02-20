@@ -63,6 +63,8 @@ class fuckmt5:
         self.winnum = 0
         self.baselot = lot
         self.deviation = devitation
+        self.last_low = 0
+        self.last_high = 0
 
     def get_history(self, period=None, num=3, beishu=1000,pos=0):
         # 获取过去的bar从当前开始
@@ -514,6 +516,15 @@ class Celue:
         print({"盈利次数":time,"停止次数":tztime})
         print({"实际盈利": round(round(self.money, 2) - round(sxf, 2),2), "原始盈利:": round(self.money, 2),
                "手续费": round(sxf, 2), "耗时":"%s小时" % (len(aclist) // 60) })
+
+    def robot(self):
+
+        pass
+
+    def history_recorder(self,newpoint):
+        """记录最高点最低点"""
+        self.last_high = max(self.last_high,newpoint)
+        self.last_low = max(self.last_low,newpoint)
 
 
 
